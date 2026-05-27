@@ -7,7 +7,6 @@ import (
 	"golang.org/x/text/message"
 
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // Base 所有文档节点的基本元素
@@ -30,15 +29,7 @@ type BaseTag struct {
 }
 
 // Usage 本地化的当前字段介绍内容
-func (b Base) Usage() string {
-	if b.UsageKey == nil {
-		return ""
-	}
-
-	return locale.Sprintf(b.UsageKey)
-}
+func (b Base) Usage() string { _ = "STUB: not implemented"; return "" }
 
 // SelfClose 当前是否为自闭合标签
-func (b *BaseTag) SelfClose() bool {
-	return b.EndTag.Local.Value == ""
-}
+func (b *BaseTag) SelfClose() bool { _ = "STUB: not implemented"; return false }

@@ -68,83 +68,10 @@ type API struct {
 // 如果 doc 不是一个有效的文档内容，比如是零值，则返回 nil。
 // 如果是 doc.APIs 中的某一个元素的 path 未必须，则会忽略此记录的显示。
 func BuildAPIDocOutline(f WorkspaceFolder, doc *ast.APIDoc) *APIDocOutline {
-	if doc == nil || doc.Title.V() == "" {
-		return nil
-	}
-
-	tags := make([]*APIDocTag, 0, len(doc.Tags))
-	for _, t := range doc.Tags {
-		tags = append(tags, &APIDocTag{
-			ID:    t.Name.V(),
-			Title: t.Title.V(),
-		})
-	}
-
-	servers := make([]*APIDocServer, 0, len(doc.Servers))
-	for _, srv := range doc.Servers {
-		servers = append(servers, &APIDocServer{
-			ID:  srv.Name.V(),
-			URL: srv.URL.V(),
-		})
-	}
-
-	outline := &APIDocOutline{
-		WorkspaceFolder: f,
-		Location: core.Location{
-			URI:   doc.URI,
-			Range: doc.Range,
-		},
-		Title:   doc.Title.V(),
-		Version: doc.Version.V(),
-		Tags:    tags,
-		Servers: servers,
-		APIs:    make([]*API, 0, len(doc.APIs)),
-	}
-
-	for _, api := range doc.APIs {
-		outline.appendAPI(api)
-	}
-
-	return outline
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (o *APIDocOutline) appendAPI(api *ast.API) {
-	uri := api.URI
-	if uri == "" {
-		uri = o.Location.URI
-	}
+func (o *APIDocOutline) appendAPI(api *ast.API) { _ = "STUB: not implemented"; return }
 
-	ts := make([]string, 0, len(api.Tags))
-	for _, tag := range api.Tags {
-		ts = append(ts, tag.V())
-	}
-
-	srvs := make([]string, 0, len(api.Servers))
-	for _, srv := range api.Servers {
-		srvs = append(srvs, srv.V())
-	}
-
-	summary := api.Summary.V()
-	if summary == "" {
-		summary = api.Description.V()
-	}
-
-	// 获取 API 的路由地址，如果为空使用 ？代替
-	path := "?"
-	if api.Path != nil {
-		path = api.Path.Path.V()
-	}
-
-	o.APIs = append(o.APIs, &API{
-		Location: core.Location{
-			URI:   uri,
-			Range: api.Range,
-		},
-		Method:     api.Method.V(),
-		Path:       path,
-		Tags:       ts,
-		Servers:    srvs,
-		Deprecated: api.Description.V(),
-		Summary:    summary,
-	})
-}
+// 获取 API 的路由地址，如果为空使用 ？代替

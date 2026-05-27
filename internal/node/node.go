@@ -21,10 +21,7 @@
 package node
 
 import (
-	"fmt"
 	"reflect"
-	"strings"
-	"unicode"
 )
 
 // TagName 结构体标签的名称
@@ -60,187 +57,42 @@ type Node struct {
 }
 
 // New 声明 Node 实例
-func New(name string, rv reflect.Value) *Node {
-	rv = RealValue(rv)
-	rt := rv.Type()
+func New(name string, rv reflect.Value) *Node { _ = "STUB: not implemented"; return nil }
 
-	num := rt.NumField()
-	if num == 0 {
-		return &Node{Value: Value{Name: name}}
-	}
+// 顶层元素可能没有 name，此处就和 fieldName 相同
 
-	n := &Node{
-		Attributes: make([]*Value, 0, num),
-		Elements:   make([]*Value, 0, num),
-		Value:      Value{Name: name},
-	}
+func (n *Node) appendAnonymous(v reflect.Value) { _ = "STUB: not implemented"; return }
 
-	for i := 0; i < num; i++ {
-		field := rt.Field(i)
-		if field.Anonymous {
-			n.appendAnonymous(rv.Field(i))
-			continue
-		}
+func (n *Node) setCData(v *Value) { _ = "STUB: not implemented"; return }
 
-		if unicode.IsLower(rune(field.Name[0])) {
-			continue
-		}
-
-		fieldName, node, usage, omitempty := parseTag(field)
-		if fieldName == "-" {
-			continue
-		}
-
-		v := rv.Field(i)
-		switch node {
-		case attribute:
-			n.appendAttr(NewValue(fieldName, v, omitempty, usage))
-		case element:
-			n.appendElem(NewValue(fieldName, v, omitempty, usage))
-		case meta:
-			n.TypeName = fieldName
-			n.Value.Usage = usage
-			n.Value.Value = rv
-			if n.Value.Name == "" { // 顶层元素可能没有 name，此处就和 fieldName 相同
-				n.Value.Name = fieldName
-			}
-		case cdata:
-			n.setCData(NewValue(fieldName, v, omitempty, usage))
-		case content:
-			n.setContent(NewValue(fieldName, v, omitempty, usage))
-		}
-	}
-
-	return n
-}
-
-func (n *Node) appendAnonymous(v reflect.Value) {
-	anonymous := New("", v)
-
-	for _, attr := range anonymous.Attributes {
-		n.appendAttr(attr)
-	}
-
-	for _, elem := range anonymous.Elements {
-		n.appendElem(elem)
-	}
-
-	if anonymous.CData != nil {
-		n.setCData(anonymous.CData)
-	}
-
-	if anonymous.Content != nil {
-		n.setContent(anonymous.Content)
-	}
-}
-
-func (n *Node) setCData(v *Value) {
-	if n.CData != nil {
-		panic("已经定义了一个节点用于表示 cdata 内容")
-	}
-	if n.Content != nil {
-		panic("cdata 与 content 不能同时存在")
-	}
-	if len(n.Elements) > 0 {
-		panic("cdata 与子元素不能同时存在")
-	}
-	n.CData = v
-}
-
-func (n *Node) setContent(v *Value) {
-	if n.Content != nil {
-		panic("已经定义了一个节点用于表示 content 内容")
-	}
-	if n.CData != nil {
-		panic("cdata 与 content 不能同时存在")
-	}
-	if len(n.Elements) > 0 {
-		panic("content 与子元素不能同时存在")
-	}
-	n.Content = v
-}
+func (n *Node) setContent(v *Value) { _ = "STUB: not implemented"; return }
 
 // Element 查找名称为 name 的节点元素
-func (n *Node) Element(name string) (*Value, bool) {
-	return n.findElem(name, n.Elements)
-}
+func (n *Node) Element(name string) (*Value, bool) { _ = "STUB: not implemented"; return nil, false }
 
 // Attribute 查找名称为 name 的节点属性
-func (n *Node) Attribute(name string) (*Value, bool) {
-	return n.findElem(name, n.Attributes)
-}
+func (n *Node) Attribute(name string) (*Value, bool) { _ = "STUB: not implemented"; return nil, false }
 
 func (n *Node) findElem(name string, elems []*Value) (*Value, bool) {
-	for _, e := range elems {
-		if e.Name == name {
-			return e, true
-		}
-	}
+	_ = "STUB: not implemented"
 	return nil, false
 }
 
-func (n *Node) appendAttr(v *Value) {
-	if _, found := n.Attribute(v.Name); found {
-		panic(fmt.Sprintf("存在重复的属性名称 %s", v.Name))
-	}
-	n.Attributes = append(n.Attributes, v)
-}
+func (n *Node) appendAttr(v *Value) { _ = "STUB: not implemented"; return }
 
-func (n *Node) appendElem(v *Value) {
-	if n.Content != nil || n.CData != nil {
-		panic("Elements 不能同时与 content 和 cdata 存在")
-	}
-
-	if _, found := n.Element(v.Name); found {
-		panic(fmt.Sprintf("存在重复的元素名称 %s", v.Name))
-	}
-
-	n.Elements = append(n.Elements, v)
-}
+func (n *Node) appendElem(v *Value) { _ = "STUB: not implemented"; return }
 
 // `apidoc:"name,attr,usage,omitempty"`
 func parseTag(field reflect.StructField) (string, Type, string, bool) {
-	tag := strings.TrimSpace(field.Tag.Get(TagName))
-	if tag == "-" {
-		return "-", 0, "", false
-	}
-
-	props := strings.Split(tag, ",")
-	switch len(props) {
-	case 2:
-		return getTagName(field, props[0]), getNodeType(props[1]), "", false
-	case 3:
-		node := getNodeType(props[1])
-		return getTagName(field, props[0]), node, props[2], false
-	case 4:
-		node := getNodeType(props[1])
-		return getTagName(field, props[0]), node, props[2], getOmitempty(props[3])
-	default:
-		panic(fmt.Sprintf("无效的 struct tag %s:%s，数量必须介于 [3,4] 之间，当前 %d", field.Name, tag, len(props)))
-	}
+	_ = "STUB: not implemented"
+	return "", *new(Type), "", false
 }
 
 func getTagName(field reflect.StructField, name string) string {
-	if name == "" {
-		name = field.Name
-	}
-	return strings.TrimSpace(name)
+	_ = "STUB: not implemented"
+	return ""
 }
 
-func getNodeType(v string) Type {
-	if node, found := stringNodeMap[strings.ToLower(strings.TrimSpace(v))]; found {
-		return node
-	}
-	panic(fmt.Sprintf("无效的 struct tag:%s", v))
-}
+func getNodeType(v string) Type { _ = "STUB: not implemented"; return *new(Type) }
 
-func getOmitempty(v string) bool {
-	switch strings.TrimSpace(v) {
-	case "omitempty":
-		return true
-	case "":
-		return false
-	default:
-		panic("无效的 struct tag，第四个元素必须得是 omitempty 或是空值")
-	}
-}
+func getOmitempty(v string) bool { _ = "STUB: not implemented"; return false }

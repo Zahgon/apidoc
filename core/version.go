@@ -20,13 +20,13 @@ func init() {
 //
 //	version+buildDate.commitHash
 func FullVersion() string {
-	return fullVersion
+	_ = "STUB: not implemented"
+
+	// Version 程序的版本号
+	//
+	// 遵守 https://semver.org/lang/zh-CN/ 规则。
+	// 程序不兼容或是文档格式不兼容时，需要提升主版本号。
+	return ""
 }
 
-// Version 程序的版本号
-//
-// 遵守 https://semver.org/lang/zh-CN/ 规则。
-// 程序不兼容或是文档格式不兼容时，需要提升主版本号。
-func Version() string {
-	return mainVersion
-}
+func Version() string { _ = "STUB: not implemented"; return "" }

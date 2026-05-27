@@ -3,16 +3,11 @@
 package lsp
 
 import (
-	"fmt"
 	"reflect"
-	"sort"
-	"unicode"
 
 	"github.com/caixw/apidoc/v7/core"
 	"github.com/caixw/apidoc/v7/internal/ast"
 	"github.com/caixw/apidoc/v7/internal/lsp/protocol"
-	"github.com/caixw/apidoc/v7/internal/node"
-	"github.com/caixw/apidoc/v7/internal/xmlenc"
 )
 
 type tokenBuilder struct {
@@ -26,15 +21,7 @@ type tokenBuilder struct {
 
 // textDocument/semanticTokens
 func (s *server) textDocumentSemanticTokens(notify bool, in *protocol.SemanticTokensParams, out *protocol.SemanticTokens) error {
-	f := s.findFolder(in.TextDocument.URI)
-	if f == nil {
-		return nil
-	}
-
-	f.parsedMux.RLock()
-	defer f.parsedMux.RUnlock()
-
-	out.Data = semanticTokens(f.doc, in.TextDocument.URI, 0, 1, 2)
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -42,157 +29,26 @@ func (s *server) textDocumentSemanticTokens(notify bool, in *protocol.SemanticTo
 // attr 表示属性；
 // value 表示属性的颜色值；
 func semanticTokens(doc *ast.APIDoc, uri core.URI, tag, attr, value int) []int {
-	b := &tokenBuilder{
-		uri:    uri,
-		tag:    tag,
-		attr:   attr,
-		value:  value,
-		tokens: make([][]int, 0, 100),
-	}
-
-	b.parse(reflect.ValueOf(doc))
-	b.sort()
-	return b.build()
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // line 和 start 都为未计算的原始值
-func (b *tokenBuilder) append(r core.Range, token int) {
-	if r.End.Line == 0 && r.End.Character == 0 { // 未初始化的段被 node.RealValue 初始化成了零值，其长度必为 0
-		return
-	}
+func (b *tokenBuilder) append(r core.Range, token int) { _ = "STUB: not implemented"; return }
 
-	l := r.End.Character - r.Start.Character
-	if l < 0 { // 可能存在长度为 0 的，比如 default="" 值的长度为 0
-		panic(fmt.Sprintf("无效的参数 range，其长度为 %d", l))
-	}
+// 未初始化的段被 node.RealValue 初始化成了零值，其长度必为 0
 
-	b.tokens = append(b.tokens, []int{r.Start.Line, r.Start.Character, l, token, 0})
-}
+// 可能存在长度为 0 的，比如 default="" 值的长度为 0
 
-func (b *tokenBuilder) build() []int {
-	ret := make([]int, 0, 5*len(b.tokens))
+func (b *tokenBuilder) build() []int { _ = "STUB: not implemented"; return nil }
 
-	var line, start int
-	for _, token := range b.tokens {
-		currLine, currStart := token[0], token[1]
-		if token[0] == line { // 同一行，start 取相对值
-			token[1] -= start
-		}
-		token[0] -= line
-		line, start = currLine, currStart
-
-		ret = append(ret, token...)
-	}
-
-	return ret
-}
+// 同一行，start 取相对值
 
 // sort 排序内容，按从小到大
-func (b *tokenBuilder) sort() {
-	sort.SliceStable(b.tokens, func(i, j int) bool {
-		ii := b.tokens[i]
-		jj := b.tokens[j]
-		return ii[0] < jj[0] || (ii[0] == jj[0] && ii[1] < jj[1])
-	})
-}
+func (b *tokenBuilder) sort() { _ = "STUB: not implemented"; return }
 
-func (b *tokenBuilder) parse(v reflect.Value) {
-	v = node.RealValue(v)
-	if !b.matched(v) {
-		return
-	}
+func (b *tokenBuilder) parse(v reflect.Value) { _ = "STUB: not implemented"; return }
 
-	b.parseAnonymous(v)
+func (b *tokenBuilder) matched(v reflect.Value) bool { _ = "STUB: not implemented"; return false }
 
-	t := v.Type()
-	for i := 0; i < t.NumField(); i++ {
-		tf := t.Field(i)
-		if tf.Anonymous || unicode.IsLower(rune(tf.Name[0])) {
-			continue
-		}
-
-		vf := node.RealValue(v.Field(i))
-		if vf.Kind() == reflect.Array || vf.Kind() == reflect.Slice {
-			for j := 0; j < vf.Len(); j++ {
-				b.parse(vf.Index(j))
-			}
-		} else {
-			b.parse(vf)
-		}
-	}
-}
-
-func (b *tokenBuilder) matched(v reflect.Value) bool {
-	if v.Kind() != reflect.Struct {
-		return false
-	}
-
-	if s, ok := v.Interface().(core.Searcher); ok && s.Loc().URI == b.uri {
-		return true
-	}
-
-	if !v.CanAddr() {
-		return false
-	}
-
-	s, ok := v.Addr().Interface().(core.Searcher)
-	return ok && s.Loc().URI == b.uri
-}
-
-func (b *tokenBuilder) parseAnonymous(v reflect.Value) {
-	t := v.Type()
-	switch elem := v.Interface().(type) {
-	case xmlenc.BaseTag:
-		b.append(elem.StartTag.Range, b.tag)
-		if !elem.SelfClose() {
-			b.append(elem.EndTag.Range, b.tag)
-		}
-	case ast.CData:
-		b.append(elem.StartTag.Range, b.tag)
-		b.append(elem.EndTag.Range, b.tag)
-	case ast.Content:
-	case ast.Attribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.NumberAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.BoolAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.VersionAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.DateAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.MethodAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.StatusAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.TypeAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	case ast.APIDocVersionAttribute:
-		b.append(elem.AttributeName.Range, b.attr)
-		b.append(elem.Value.Range, b.value)
-	default:
-		for i := 0; i < t.NumField(); i++ {
-			tf := t.Field(i)
-			if !tf.Anonymous || unicode.IsLower(rune(tf.Name[0])) {
-				continue
-			}
-
-			vf := node.RealValue(v.Field(i))
-			if vf.Kind() == reflect.Array || vf.Kind() == reflect.Slice {
-				for j := 0; j < vf.Len(); j++ {
-					b.parseAnonymous(vf.Index(j))
-				}
-			} else {
-				b.parseAnonymous(vf)
-			}
-		}
-	}
-}
+func (b *tokenBuilder) parseAnonymous(v reflect.Value) { _ = "STUB: not implemented"; return }

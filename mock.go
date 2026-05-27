@@ -3,15 +3,12 @@
 package apidoc
 
 import (
-	"math/rand"
 	"net/http"
 	"time"
 
 	"github.com/issue9/rands"
 
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/locale"
 	"github.com/caixw/apidoc/v7/internal/mock"
 )
 
@@ -20,12 +17,7 @@ type Range struct {
 	Min, Max int
 }
 
-func (r *Range) sanitize() *core.Error {
-	if r.Max <= r.Min {
-		return core.NewError(locale.ErrInvalidValue).WithField("Min")
-	}
-	return nil
-}
+func (r *Range) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
 // MockOptions mock 的一些随机设置项
 type MockOptions struct {
@@ -70,175 +62,33 @@ var defaultMockOptions = &MockOptions{
 	DateEnd:   time.Now().Add(time.Hour * 24 * 3650),
 }
 
-func (o *MockOptions) sanitize() *core.Error {
-	if err := o.SliceSize.sanitize(); err != nil {
-		err.Field = "SliceSize." + err.Field
-		return err
-	}
+func (o *MockOptions) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if err := o.NumberSize.sanitize(); err != nil {
-		err.Field = "NumberSize." + err.Field
-		return err
-	}
+func (o *MockOptions) gen() (*mock.GenOptions, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	if err := o.StringSize.sanitize(); err != nil {
-		err.Field = "StringSize." + err.Field
-		return err
-	}
+func (o *MockOptions) integer() int { _ = "STUB: not implemented"; return 0 }
 
-	if err := o.EmailUsernameSize.sanitize(); err != nil {
-		err.Field = "EmailUsernameSize." + err.Field
-		return err
-	}
+func (o *MockOptions) float() float32 { _ = "STUB: not implemented"; return 0 }
 
-	if len(o.StringAlpha) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "StringAlpha").WithField("StringAlpha")
-	}
+func (o *MockOptions) url() string { _ = "STUB: not implemented"; return "" }
 
-	if len(o.URLDomains) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "URLDomains").WithField("URLDomains")
-	}
+func (o *MockOptions) email() string { _ = "STUB: not implemented"; return "" }
 
-	if len(o.EmailDomains) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "EmailDomains").WithField("EmailDomains")
-	}
+func (o *MockOptions) image() string { _ = "STUB: not implemented"; return "" }
 
-	now := time.Now()
-	if o.DateStart.IsZero() {
-		o.DateStart = now.Add(-time.Hour * 24 * 365)
-	}
-	if o.DateEnd.IsZero() {
-		o.DateEnd = now.Add(time.Hour * 24 * 3650)
-	}
-	o.dateSize = o.DateEnd.Unix() - o.DateStart.Unix() - 86400
-	if o.dateSize <= 0 {
-		return core.NewError(locale.ErrInvalidValue).WithField("DateStart")
-	}
+func (o *MockOptions) date() string { _ = "STUB: not implemented"; return "" }
 
-	return nil
-}
+func (o *MockOptions) time() string { _ = "STUB: not implemented"; return "" }
 
-func (o *MockOptions) gen() (*mock.GenOptions, error) {
-	if o == nil {
-		o = defaultMockOptions
-	} else if err := o.sanitize(); err != nil {
-		err.Field = "MockOptions." + err.Field
-		return nil, err
-	}
-
-	return &mock.GenOptions{
-		Number: func(p *ast.Param) any {
-			switch p.Type.V() {
-			case ast.TypeFloat:
-				return o.float()
-			case ast.TypeInt:
-				return o.integer()
-			}
-
-			if !o.EnableFloat {
-				return o.integer()
-			}
-
-			if rand.Int()%2 == 0 {
-				return o.integer()
-			}
-			return o.float()
-		},
-
-		String: func(p *ast.Param) string {
-			switch p.Type.V() {
-			case ast.TypeEmail:
-				return o.email()
-			case ast.TypeURL:
-				return o.url()
-			case ast.TypeImage:
-				return o.image()
-			case ast.TypeDate:
-				return o.date()
-			case ast.TypeTime:
-				return o.time()
-			case ast.TypeDateTime:
-				return o.dateTime()
-			}
-			return rands.String(o.StringSize.Min, o.StringSize.Max, o.StringAlpha)
-		},
-
-		Bool: func() bool {
-			return rand.Int()%2 == 0
-		},
-
-		SliceSize: func() int {
-			return rand.Intn(o.SliceSize.Max-o.SliceSize.Min) + o.SliceSize.Min
-		},
-
-		Index: func(max int) int {
-			return rand.Intn(max)
-		},
-	}, nil
-}
-
-func (o *MockOptions) integer() int {
-	return rand.Intn(o.NumberSize.Max-o.NumberSize.Min) + o.NumberSize.Min
-}
-
-func (o *MockOptions) float() float32 {
-	return float32(o.NumberSize.Min) + rand.Float32()*float32(o.NumberSize.Max-o.NumberSize.Min)
-}
-
-func (o *MockOptions) url() string {
-	url := o.URLDomains[rand.Intn(len(o.URLDomains))]
-	if url[len(url)-1] != '/' {
-		url += "/"
-	}
-
-	size := rand.Intn(4)
-	for i := 0; i < size; i++ {
-		url += rands.String(1, 5, rands.AlphaNumber) + "/"
-	}
-	return url
-}
-
-func (o *MockOptions) email() string {
-	domain := o.EmailDomains[rand.Intn(len(o.EmailDomains))]
-	username := rands.String(o.EmailUsernameSize.Min, o.EmailUsernameSize.Max, rands.AlphaNumber)
-	return username + "@" + domain
-}
-
-func (o *MockOptions) image() string {
-	path := o.ImageBasePrefix
-	if path[len(path)-1] != '/' {
-		path += "/"
-	}
-	return path + rands.String(1, 5, rands.AlphaNumber)
-}
-
-func (o *MockOptions) date() string {
-	s := rand.Int63n(o.dateSize)
-	return o.DateStart.Add(time.Duration(s) * time.Second).Format(ast.DateFormat)
-}
-
-func (o *MockOptions) time() string {
-	d := rand.Int63n(86400)
-	return o.DateStart.Add(time.Duration(d) * time.Second).Format(ast.TimeFormat)
-}
-
-func (o *MockOptions) dateTime() string {
-	return o.date() + "T" + o.time()
-}
+func (o *MockOptions) dateTime() string { _ = "STUB: not implemented"; return "" }
 
 // Mock 根据文档数据生成 Mock 中间件
 //
 // data 为文档内容；
 // o 用于生成 Mock 数据的随机项，如果为 nil，则会采用默认配置项；
 func Mock(h *core.MessageHandler, data []byte, o *MockOptions) (http.Handler, error) {
-	g, err := o.gen()
-	if err != nil {
-		return nil, err
-	}
-
-	d := &ast.APIDoc{}
-	d.Parse(h, core.Block{Data: data})
-	return mock.New(h, d, o.Indent, o.ImageBasePrefix, o.Servers, g)
+	_ = "STUB: not implemented"
+	return *new(http.Handler), nil
 }
 
 // MockFile 根据文档生成 Mock 中间件
@@ -246,10 +96,6 @@ func Mock(h *core.MessageHandler, data []byte, o *MockOptions) (http.Handler, er
 // path 为文档路径；
 // o 用于生成 Mock 数据的随机项，如果为 nil，则会采用默认配置项；
 func MockFile(h *core.MessageHandler, path core.URI, o *MockOptions) (http.Handler, error) {
-	g, err := o.gen()
-	if err != nil {
-		return nil, err
-	}
-
-	return mock.Load(h, path, o.Indent, o.ImageBasePrefix, o.Servers, g)
+	_ = "STUB: not implemented"
+	return *new(http.Handler), nil
 }

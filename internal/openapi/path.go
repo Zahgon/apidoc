@@ -3,10 +3,7 @@
 package openapi
 
 import (
-	"net/http"
-
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // PathItem 每一条路径的详细描述信息
@@ -81,149 +78,14 @@ type Response struct {
 	Ref string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
 }
 
-func (path *PathItem) sanitize() *core.Error {
-	var o *Operation
-	var method string
-	switch {
-	case path.Get != nil:
-		o = path.Get
-		method = http.MethodGet
-	case path.Put != nil:
-		o = path.Put
-		method = http.MethodPut
-	case path.Post != nil:
-		o = path.Post
-		method = http.MethodPost
-	case path.Delete != nil:
-		o = path.Delete
-		method = http.MethodDelete
-	case path.Options != nil:
-		o = path.Options
-		method = http.MethodOptions
-	case path.Head != nil:
-		o = path.Head
-		method = http.MethodHead
-	case path.Patch != nil:
-		o = path.Patch
-		method = http.MethodPatch
-	case path.Trace != nil:
-		o = path.Trace
-		method = http.MethodTrace
-	}
+func (path *PathItem) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if o == nil {
-		return core.NewError(locale.ErrIsEmpty, "operation").WithField("operation")
+func (o *Operation) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	}
+func (req *RequestBody) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if err := o.sanitize(); err != nil {
-		err.Field = method + "." + err.Field
-		return err
-	}
-	return nil
-}
+func (resp *Response) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-func (o *Operation) sanitize() *core.Error {
-	if len(o.Responses) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "responses").WithField("responses")
-	}
-	for name, resp := range o.Responses {
-		if err := resp.sanitize(); err != nil {
-			err.Field = "responses[" + name + "]." + err.Field
-			return err
-		}
-	}
+func (mt *MediaType) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	for name, call := range o.Callbacks {
-		p := (*PathItem)(call)
-		if err := p.sanitize(); err != nil {
-			err.Field = "callbacks[" + name + "]." + err.Field
-			return err
-		}
-	}
-
-	if o.RequestBody != nil {
-		if serr := o.RequestBody.sanitize(); serr != nil {
-			serr.Field = "request." + serr.Field
-			return serr
-		}
-	}
-
-	return nil
-}
-
-func (req *RequestBody) sanitize() *core.Error {
-	if len(req.Content) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "content").WithField("content")
-	}
-
-	for key, mt := range req.Content {
-		if err := mt.sanitize(); err != nil {
-			err.Field = "content[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (resp *Response) sanitize() *core.Error {
-	if resp.Description == "" {
-		return core.NewError(locale.ErrIsEmpty, "description").WithField("description")
-	}
-
-	for key, header := range resp.Headers {
-		if err := header.sanitize(); err != nil {
-			err.Field = "headers[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, mt := range resp.Content {
-		if err := mt.sanitize(); err != nil {
-			err.Field = "content[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, link := range resp.Links {
-		if err := link.sanitize(); err != nil {
-			err.Field = "links[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (mt *MediaType) sanitize() *core.Error {
-	if mt.Schema != nil {
-		if err := mt.Schema.sanitize(); err != nil {
-			err.Field = "schema." + err.Field
-			return err
-		}
-	}
-
-	for key, en := range mt.Encoding {
-		if err := en.sanitize(); err != nil {
-			err.Field = "encoding[" + key + "]." + err.Field
-			return err
-		}
-	}
-	return nil
-}
-
-func (en *Encoding) sanitize() *core.Error {
-	if err := en.Style.sanitize(); err != nil {
-		return err
-	}
-
-	for key, header := range en.Headers {
-		if err := header.sanitize(); err != nil {
-			err.Field = "headers[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
+func (en *Encoding) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }

@@ -4,13 +4,8 @@ package ast
 
 import (
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
-	"github.com/issue9/version"
-
-	"github.com/caixw/apidoc/v7/internal/locale"
 	"github.com/caixw/apidoc/v7/internal/xmlenc"
 )
 
@@ -71,236 +66,148 @@ type (
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *Attribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	a.Value = attr.Value
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *Attribute) EncodeXMLAttr() (string, error) {
-	return a.V(), nil
+	_ = "STUB: not implemented"
+
+	// V 返回当前属性实际表示的值
+	return "", nil
 }
 
-// V 返回当前属性实际表示的值
-func (a *Attribute) V() string {
-	if a == nil {
-		return ""
-	}
-	return a.Value.Value
-}
+func (a *Attribute) V() string { _ = "STUB: not implemented"; return "" }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (num *NumberAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	if v, err := strconv.Atoi(attr.Value.Value); err == nil {
-		num.Value = Number{
-			Range: attr.Value.Range,
-			Int:   v,
-		}
-		return nil
-	}
-
-	v, err := strconv.ParseFloat(attr.Value.Value, 64)
-	if err != nil {
-		return attr.Value.WithError(err).WithField(attr.Name.String())
-	}
-	num.Value = Number{
-		Range:   attr.Value.Range,
-		Float:   v,
-		IsFloat: true,
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (num *NumberAttribute) EncodeXMLAttr() (string, error) {
-	if num.IsFloat() {
-		return strconv.FormatFloat(num.FloatValue(), 'f', -1, 64), nil
-	}
-	return strconv.Itoa(num.IntValue()), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // IntValue 返回当前属性实际表示的值
-func (num *NumberAttribute) IntValue() int {
-	if num == nil {
-		return 0
-	}
-	return num.Value.Int
-}
+func (num *NumberAttribute) IntValue() int { _ = "STUB: not implemented"; return 0 }
 
 // FloatValue 返回当前属性实际表示的值
-func (num *NumberAttribute) FloatValue() float64 {
-	if num == nil {
-		return 0
-	}
-	return num.Value.Float
-}
+func (num *NumberAttribute) FloatValue() float64 { _ = "STUB: not implemented"; return 0 }
 
 // IsFloat 当前的数值类型是否为浮点型
-func (num *NumberAttribute) IsFloat() bool {
-	return num.Value.IsFloat
-}
+func (num *NumberAttribute) IsFloat() bool { _ = "STUB: not implemented"; return false }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (b *BoolAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	v, err := strconv.ParseBool(attr.Value.Value)
-	if err != nil {
-		return attr.Value.WithError(err).WithField(attr.Name.String())
-	}
-
-	b.Value = Bool{
-		Range: attr.Value.Range,
-		Value: v,
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
-func (b *BoolAttribute) EncodeXMLAttr() (string, error) {
-	return strconv.FormatBool(b.V()), nil
-}
+func (b *BoolAttribute) EncodeXMLAttr() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // V 返回当前属性实际表示的值
-func (b *BoolAttribute) V() bool {
-	if b == nil {
-		return false
-	}
-	return b.Value.Value
-}
+func (b *BoolAttribute) V() bool { _ = "STUB: not implemented"; return false }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *MethodAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	a.Value = attr.Value
-	a.Value.Value = strings.ToUpper(a.V())
-	if !isValidMethod(a.V()) {
-		return attr.Value.NewError(locale.ErrInvalidValue).WithField(attr.Name.String())
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *MethodAttribute) EncodeXMLAttr() (string, error) {
-	return a.V(), nil
+	_ = "STUB: not implemented"
+
+	// V 返回当前属性实际表示的值
+	return "", nil
 }
 
-// V 返回当前属性实际表示的值
-func (a *MethodAttribute) V() string {
-	return (*Attribute)(a).V()
-}
+func (a *MethodAttribute) V() string { _ = "STUB: not implemented"; return "" }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *StatusAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	v := NumberAttribute{}
-	if err := v.DecodeXMLAttr(p, attr); err != nil {
-		return err
-	}
-
-	if !isValidStatus(v.Value.Int) {
-		return attr.Value.NewError(locale.ErrInvalidValue).WithField(attr.Name.String())
-	}
-
-	*a = StatusAttribute(v)
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *StatusAttribute) EncodeXMLAttr() (string, error) {
-	return strconv.Itoa(a.V()), nil
+	_ = "STUB: not implemented"
+	return "", nil
 }
 
 // V 返回当前属性实际表示的值
-func (a *StatusAttribute) V() int {
-	return (*NumberAttribute)(a).IntValue()
-}
+func (a *StatusAttribute) V() int { _ = "STUB: not implemented"; return 0 }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *TypeAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	a.Value = attr.Value
-	if !isValidType(a.V()) {
-		return attr.Value.NewError(locale.ErrInvalidValue).WithField(attr.Name.String())
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *TypeAttribute) EncodeXMLAttr() (string, error) {
-	return a.V(), nil
+	_ = "STUB: not implemented"
+
+	// V 返回当前属性实际表示的值
+	return "", nil
 }
 
-// V 返回当前属性实际表示的值
-func (a *TypeAttribute) V() string {
-	if a == nil {
-		return ""
-	}
-	return a.Value.Value
-}
+func (a *TypeAttribute) V() string { _ = "STUB: not implemented"; return "" }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *VersionAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	a.Value = attr.Value
-	if !isValidVersion(a.V()) {
-		return attr.Value.NewError(locale.ErrInvalidValue).WithField(attr.Name.String())
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *VersionAttribute) EncodeXMLAttr() (string, error) {
-	return a.V(), nil
+	_ = "STUB: not implemented"
+
+	// V 返回当前属性实际表示的值
+	return "", nil
 }
 
-// V 返回当前属性实际表示的值
-func (a *VersionAttribute) V() string {
-	return a.Value.Value
-}
+func (a *VersionAttribute) V() string { _ = "STUB: not implemented"; return "" }
 
 // DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (d *DateAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	t, err := time.Parse(dateFormat, attr.Value.Value)
-	if err != nil {
-		return attr.Value.WithError(err).WithField(attr.Name.String())
-	}
-
-	d.Value = Date{
-		Range: attr.Value.Range,
-		Value: t,
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
-func (d *DateAttribute) EncodeXMLAttr() (string, error) {
-	return d.V().Format(dateFormat), nil
-}
+func (d *DateAttribute) EncodeXMLAttr() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // V 返回当前属性实际表示的值
 func (d *DateAttribute) V() time.Time {
-	return d.Value.Value
+	_ = "STUB: not implemented"
+	return *
+
+	// DecodeXMLAttr AttrDecoder.DecodeXMLAttr
+	new(time.Time)
 }
 
-// DecodeXMLAttr AttrDecoder.DecodeXMLAttr
 func (a *APIDocVersionAttribute) DecodeXMLAttr(p *xmlenc.Parser, attr *xmlenc.Attribute) error {
-	a.Value = attr.Value
-
-	ok, err := version.SemVerCompatible(Version, attr.Value.Value)
-	if err != nil {
-		return attr.Value.WithError(err).WithField(attr.Name.String())
-	}
-
-	if !ok {
-		return attr.Value.NewError(locale.ErrInvalidValue).WithField(attr.Name.String())
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 // EncodeXMLAttr AttrEncoder.EncodeXMLAttr
 func (a *APIDocVersionAttribute) EncodeXMLAttr() (string, error) {
-	return a.V(), nil
+	_ = "STUB: not implemented"
+
+	// V 返回当前属性实际表示的值
+	return "", nil
 }
 
-// V 返回当前属性实际表示的值
-func (a *APIDocVersionAttribute) V() string {
-	return (*Attribute)(a).V()
-}
+func (a *APIDocVersionAttribute) V() string { _ = "STUB: not implemented"; return "" }
 
 var validMethods = []string{
 	http.MethodGet,
@@ -312,37 +219,10 @@ var validMethods = []string{
 	http.MethodOptions,
 }
 
-func isValidMethod(method string) bool {
-	for _, m := range validMethods {
-		if m == method {
-			return true
-		}
-	}
+func isValidMethod(method string) bool { _ = "STUB: not implemented"; return false }
 
-	return false
-}
+func isValidStatus(status int) bool { _ = "STUB: not implemented"; return false }
 
-func isValidStatus(status int) bool {
-	return (status >= http.StatusContinue) &&
-		(status <= http.StatusNetworkAuthenticationRequired)
-}
+func isValidType(t string) bool { _ = "STUB: not implemented"; return false }
 
-func isValidType(t string) bool {
-	return t == TypeBool ||
-		t == TypeObject ||
-		t == TypeNumber ||
-		t == TypeInt ||
-		t == TypeFloat ||
-		t == TypeString ||
-		t == TypeURL ||
-		t == TypeEmail ||
-		t == TypeImage ||
-		t == TypeDate ||
-		t == TypeTime ||
-		t == TypeDateTime ||
-		t == TypeNone
-}
-
-func isValidVersion(v string) bool {
-	return version.SemVerValid(v)
-}
+func isValidVersion(v string) bool { _ = "STUB: not implemented"; return false }

@@ -6,14 +6,8 @@
 package openapi
 
 import (
-	"strconv"
-
-	"github.com/issue9/validation/is"
-	"github.com/issue9/version"
-
 	"github.com/caixw/apidoc/v7/core"
 	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // LatestVersion openapi 最新的版本号
@@ -82,152 +76,16 @@ type Example struct {
 // ExampleValue 表示示例的内容类型。
 type ExampleValue string
 
-func newTag(tag *ast.Tag) *Tag {
-	return &Tag{
-		Name:        tag.Name.V(),
-		Description: tag.Title.V(),
-	}
-}
+func newTag(tag *ast.Tag) *Tag { _ = "STUB: not implemented"; return nil }
 
-func (oa *OpenAPI) sanitize() *core.Error {
-	if oa.OpenAPI == "" {
-		oa.OpenAPI = LatestVersion
-	}
+func (oa *OpenAPI) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if !version.SemVerValid(oa.OpenAPI) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("openapi")
-	}
+// 没有，则采用默认值
 
-	if oa.Info == nil {
-		return core.NewError(locale.ErrIsEmpty, "info").WithField("info")
-	}
-	if err := oa.Info.sanitize(); err != nil {
-		err.Field = "info." + err.Field
-		return err
-	}
+func (c *Components) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	// 没有，则采用默认值
-	if len(oa.Servers) == 0 {
-		oa.Servers = []*Server{{
-			URL: "/",
-		}}
-	}
+func (ext *ExternalDocumentation) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	for index, srv := range oa.Servers {
-		if err := srv.sanitize(); err != nil {
-			err.Field = "servers[" + strconv.Itoa(index) + "]."
-			return err
-		}
-	}
+func (l *Link) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if len(oa.Paths) == 0 {
-		return core.NewError(locale.ErrIsEmpty, "paths").WithField("paths")
-	}
-	for k, path := range oa.Paths {
-		if err := path.sanitize(); err != nil {
-			err.Field = "paths[" + k + "]." + err.Field
-			return err
-		}
-	}
-
-	if oa.Components != nil {
-		if err := oa.Components.sanitize(); err != nil {
-			err.Field = "components." + err.Field
-			return err
-		}
-	}
-
-	for index, item := range oa.Tags {
-		if err := item.sanitize(); err != nil {
-			err.Field = "tags[" + strconv.Itoa(index) + "]." + err.Field
-			return err
-		}
-	}
-
-	if oa.ExternalDocs != nil {
-		if err := oa.ExternalDocs.sanitize(); err != nil {
-			err.Field = "externalDocs." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (c *Components) sanitize() *core.Error {
-	for key, item := range c.Schemas {
-		if err := item.sanitize(); err != nil {
-			err.Field = "schemas[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, item := range c.Responses {
-		if err := item.sanitize(); err != nil {
-			err.Field = "response[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, item := range c.Parameters {
-		if err := item.sanitize(); err != nil {
-			err.Field = "parameters[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, item := range c.RequestBodies {
-		if err := item.sanitize(); err != nil {
-			err.Field = "requestBodies[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, item := range c.Headers {
-		if err := item.sanitize(); err != nil {
-			err.Field = "headers[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	for key, item := range c.Links {
-		if err := item.sanitize(); err != nil {
-			err.Field = "links[" + key + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (ext *ExternalDocumentation) sanitize() *core.Error {
-	if !is.URL(ext.URL) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("url")
-	}
-
-	return nil
-}
-
-func (l *Link) sanitize() *core.Error {
-	if err := l.Server.sanitize(); err != nil {
-		err.Field = "server." + err.Field
-		return err
-	}
-
-	return nil
-}
-
-func (tag *Tag) sanitize() *core.Error {
-	if tag.Name == "" {
-		return core.NewError(locale.ErrInvalidFormat).WithField("name")
-	}
-
-	if tag.ExternalDocs != nil {
-		if err := tag.ExternalDocs.sanitize(); err != nil {
-			err.Field = "externalDocs." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
+func (tag *Tag) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }

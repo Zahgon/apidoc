@@ -45,24 +45,10 @@ type LogMessageParams struct {
 }
 
 // IsValidTraceValue 是否是一个有效的 TraceValue
-func IsValidTraceValue(v string) bool {
-	return v == TraceValueOff || v == TraceValueMessage || v == TraceValueVerbose
-}
+func IsValidTraceValue(v string) bool { _ = "STUB: not implemented"; return false }
 
 // BuildLogTrace 生成 logTrace 对象
 func BuildLogTrace(trace, message, verbose string) *LogTraceParams {
-	switch trace {
-	case TraceValueOff:
-		return nil
-	case TraceValueMessage:
-		verbose = ""
-	case TraceValueVerbose:
-	default:
-		panic("无效的 trace 值")
-	}
-
-	return &LogTraceParams{
-		Message: message,
-		Verbose: verbose,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }

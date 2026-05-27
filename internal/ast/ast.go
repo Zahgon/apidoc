@@ -4,13 +4,7 @@
 package ast
 
 import (
-	"bufio"
-	"bytes"
-	"errors"
-	"io"
-	"strings"
 	"time"
-	"unicode"
 
 	"github.com/caixw/apidoc/v7/core"
 )
@@ -105,74 +99,18 @@ type (
 )
 
 // ParseType 获取类型字符串中的原始类型和子类型
-func ParseType(t string) (primitive, sub string) {
-	index := strings.IndexByte(t, '.')
-	if index == -1 {
-		return t, ""
-	}
-	return t[:index], t[index+1:]
-}
+func ParseType(t string) (primitive, sub string) { _ = "STUB: not implemented"; return "", "" }
 
 func trimLeftSpace(v string) string {
-	var min []byte // 找出的最小行首相同空格内容
-
-	s := bufio.NewScanner(strings.NewReader(v))
-	s.Split(bufio.ScanLines)
-	for s.Scan() {
-		line := s.Bytes()
-		if len(bytes.TrimSpace(line)) == 0 { // 忽略空行
-			continue
-		}
-
-		var index int
-		for i, b := range line {
-			if !unicode.IsSpace(rune(b)) {
-				index = i
-				break
-			}
-		}
-
-		switch {
-		case index == 0: // 当前行顶格
-			return v
-		case len(min) == 0: // 未初始化 min，且 index > 0
-			min = make([]byte, index)
-			copy(min, line[:index])
-		default:
-			min = getSamePrefix(min, line[:index])
-		}
-	}
-
-	if len(min) == 0 {
-		return v
-	}
-
-	buf := bufio.NewReader(strings.NewReader(v))
-	ret := make([]byte, 0, buf.Size())
-	for {
-		line, err := buf.ReadBytes('\n')
-		line = bytes.TrimPrefix(line, min)
-		ret = append(ret, line...)
-
-		if errors.Is(err, io.EOF) {
-			break
-		}
-	}
-
-	return string(ret)
+	_ = "STUB: not implemented"
+	// 找出的最小行首相同空格内容
+	return ""
 }
 
-func getSamePrefix(v1, v2 []byte) []byte {
-	l1, l2 := len(v1), len(v2)
-	l := l1
-	if l1 > l2 {
-		l = l2
-	}
+// 忽略空行
 
-	for i := 0; i < l; i++ {
-		if v1[i] != v2[i] {
-			return v1[:i]
-		}
-	}
-	return v1[:l]
-}
+// 当前行顶格
+
+// 未初始化 min，且 index > 0
+
+func getSamePrefix(v1, v2 []byte) []byte { _ = "STUB: not implemented"; return nil }

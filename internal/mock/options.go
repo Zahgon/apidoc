@@ -3,8 +3,6 @@
 package mock
 
 import (
-	"strconv"
-
 	"github.com/caixw/apidoc/v7/internal/ast"
 )
 
@@ -32,33 +30,14 @@ type GenOptions struct {
 	Index func(max int) int
 }
 
-func isEnum(p *ast.Param) bool {
-	return len(p.Enums) > 0
-}
+func isEnum(p *ast.Param) bool { _ = "STUB: not implemented"; return false }
 
-func (g *GenOptions) generateBool() bool {
-	return g.Bool()
-}
+func (g *GenOptions) generateBool() bool { _ = "STUB: not implemented"; return false }
 
-func (g *GenOptions) generateNumber(p *ast.Param) any {
-	if isEnum(p) {
-		index := g.Index(len(p.Enums))
-		v, err := strconv.ParseInt(p.Enums[index].Value.V(), 10, 32)
-		if err != nil { // 这属于文档定义错误，直接 panic
-			panic(err)
-		}
-		return v
-	}
-	return g.Number(p)
-}
+func (g *GenOptions) generateNumber(p *ast.Param) any { _ = "STUB: not implemented"; return *new(any) }
 
-func (g *GenOptions) generateString(p *ast.Param) string {
-	if isEnum(p) {
-		return p.Enums[g.Index(len(p.Enums))].Value.V()
-	}
-	return g.String(p)
-}
+// 这属于文档定义错误，直接 panic
 
-func (g *GenOptions) generateSliceSize() int {
-	return g.SliceSize()
-}
+func (g *GenOptions) generateString(p *ast.Param) string { _ = "STUB: not implemented"; return "" }
+
+func (g *GenOptions) generateSliceSize() int { _ = "STUB: not implemented"; return 0 }

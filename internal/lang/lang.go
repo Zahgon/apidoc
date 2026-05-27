@@ -3,8 +3,6 @@
 // Package lang 管理各类语言提取注释代码块规则的定义
 package lang
 
-import "fmt"
-
 // 所有支持的语言模型定义
 var langs = []*Language{
 	{
@@ -300,24 +298,16 @@ var cStyle = []blocker{
 }
 
 // 处理 "XXX\""
-func newCStyleString() blocker {
-	return newString(`"`, `"`, `\`)
-}
+func newCStyleString() blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
 // 处理 '"'
-func newCStyleChar() blocker {
-	return newString(`'`, `'`, "")
-}
+func newCStyleChar() blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
 // 处理 // xxx
-func newCStyleSingleComment() blocker {
-	return newSingleComment(`//`)
-}
+func newCStyleSingleComment() blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
 // 处理 /* */
-func newCStyleMultipleComment() blocker {
-	return newMultipleComment(`/*`, `*/`, "*")
-}
+func newCStyleMultipleComment() blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
 // Language 语言模块的定义
 type Language struct {
@@ -330,37 +320,13 @@ type Language struct {
 // Get 获取指定语言的定义信息
 //
 // 若不存在，则返回 nil
-func Get(id string) *Language {
-	for _, lang := range langs {
-		if lang.ID == id {
-			return lang
-		}
-	}
-
-	return nil
-}
+func Get(id string) *Language { _ = "STUB: not implemented"; return nil }
 
 // GetByExt 根据扩展名获取语言定义信息
 //
 // ext 必须以 . 作为开头
 // 若不存在，则返回 nil
-func GetByExt(ext string) *Language {
-	if len(ext) == 0 || ext[0] != '.' {
-		panic(fmt.Sprintf("参数 ext 的值 [%s] 不能为空，且必须以 . 作为开头", ext))
-	}
-
-	for _, lang := range langs {
-		for _, e := range lang.Exts {
-			if e == ext {
-				return lang
-			}
-		}
-	}
-
-	return nil
-}
+func GetByExt(ext string) *Language { _ = "STUB: not implemented"; return nil }
 
 // Langs 返回所有支持的语言
-func Langs() []*Language {
-	return langs
-}
+func Langs() []*Language { _ = "STUB: not implemented"; return nil }

@@ -147,22 +147,7 @@ type DidChangeTextDocumentParams struct {
 }
 
 // Blocks 返回 core.Block 的列表
-func (p *DidChangeTextDocumentParams) Blocks() []core.Block {
-	blocks := make([]core.Block, 0, len(p.ContentChanges))
-	for _, c := range p.ContentChanges {
-		blk := core.Block{
-			Data: []byte(c.Text),
-			Location: core.Location{
-				URI: p.TextDocument.URI,
-			},
-		}
-		if c.Range != nil {
-			blk.Location.Range = *c.Range
-		}
-		blocks = append(blocks, blk)
-	}
-	return blocks
-}
+func (p *DidChangeTextDocumentParams) Blocks() []core.Block { _ = "STUB: not implemented"; return nil }
 
 // TextDocumentContentChangeEvent an event describing a change to a text document.
 // If range and rangeLength are omitted the new text is considered to be

@@ -3,8 +3,6 @@
 // Package core 提供基础的核心功能
 package core
 
-import "fmt"
-
 const (
 	// Name 程序的正式名称
 	Name = "apidoc"
@@ -60,56 +58,33 @@ type Location struct {
 }
 
 // Equal 判断与 v 是否相同
-func (p Position) Equal(v Position) bool {
-	return p.Line == v.Line && p.Character == v.Character
-}
+func (p Position) Equal(v Position) bool { _ = "STUB: not implemented"; return false }
 
 // Equal 判断与 v 是否相同
-func (r Range) Equal(v Range) bool {
-	return r.Start.Equal(v.Start) && r.End.Equal(v.End)
-}
+func (r Range) Equal(v Range) bool { _ = "STUB: not implemented"; return false }
 
 // IsEmpty 表示 Range 表示的范围长度为空
-func (r Range) IsEmpty() bool { return r.End == r.Start }
+func (r Range) IsEmpty() bool { _ = "STUB: not implemented"; return false }
 
 // Contains 是否包含了 p 这个点
-func (r Range) Contains(p Position) bool {
-	s := r.Start
-	e := r.End
-	return (s.Line < p.Line || (s.Line == p.Line && s.Character <= p.Character)) &&
-		(e.Line > p.Line || (e.Line == p.Line && e.Character >= p.Character))
-}
+func (r Range) Contains(p Position) bool { _ = "STUB: not implemented"; return false }
 
 // Loc 返回当前的范围
-func (l Location) Loc() Location { return l }
+func (l Location) Loc() Location {
+	_ = "STUB: not implemented"
 
-// Contains l 是否包含 pos 这个点
-func (l Location) Contains(uri URI, pos Position) bool {
-	return l.URI == uri && l.Range.Contains(pos)
+	// Contains l 是否包含 pos 这个点
+	return *new(Location)
 }
 
-func (l Location) String() string {
-	if l.IsEmpty() {
-		return ""
-	}
+func (l Location) Contains(uri URI, pos Position) bool { _ = "STUB: not implemented"; return false }
 
-	if l.Range.IsEmpty() {
-		return l.URI.String()
-	}
-
-	s := l.Range.Start
-	e := l.Range.End
-	return fmt.Sprintf("%s[%d:%d,%d:%d]", l.URI, s.Line, s.Character, e.Line, e.Character)
-}
+func (l Location) String() string { _ = "STUB: not implemented"; return "" }
 
 // Equal 判断与 v 是否相等
 //
 // 所有字段都相同即返回 true。
-func (l Location) Equal(v Location) bool {
-	return l.Range.Equal(v.Range) && l.URI == v.URI
-}
+func (l Location) Equal(v Location) bool { _ = "STUB: not implemented"; return false }
 
 // IsEmpty 表示 Location 未指向任何位置
-func (l Location) IsEmpty() bool {
-	return l.URI == "" && l.Range.IsEmpty()
-}
+func (l Location) IsEmpty() bool { _ = "STUB: not implemented"; return false }

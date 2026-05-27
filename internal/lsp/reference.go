@@ -19,15 +19,7 @@ var (
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_references
 func (s *server) textDocumentReferences(notify bool, in *protocol.ReferenceParams, out *[]core.Location) error {
-	f := s.findFolder(in.TextDocument.URI)
-	if f == nil {
-		return nil
-	}
-
-	f.parsedMux.RLock()
-	defer f.parsedMux.RUnlock()
-
-	*out = references(f.doc, in.TextDocument.URI, in.Position, in.Context.IncludeDeclaration)
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -35,37 +27,14 @@ func (s *server) textDocumentReferences(notify bool, in *protocol.ReferenceParam
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#textDocument_definition
 func (s *server) textDocumentDefinition(notify bool, in *protocol.DefinitionParams, out *[]core.Location) error {
+	_ = "STUB: not implemented"
 	// NOTE: LSP 允许 out 的值是 null，而 jsonrpc 模块默认情况下是空值，而不是 nil，
 	// 所以在可能的情况下，都尽量将其返回类型改为数组，
 	// 或是像 protocol.Hover 一样为返回类型实现 json.Marshaler 接口。
-	f := s.findFolder(in.TextDocument.URI)
-	if f == nil {
-		return nil
-	}
-
-	f.parsedMux.RLock()
-	defer f.parsedMux.RUnlock()
-
-	if r := f.doc.Search(in.TextDocument.URI, in.TextDocumentPositionParams.Position, definitionerType); r != nil {
-		*out = []core.Location{r.(ast.Definitioner).Definition().Location}
-	}
 	return nil
 }
 
 func references(doc *ast.APIDoc, uri core.URI, pos core.Position, include bool) (locations []core.Location) {
-	r := doc.Search(uri, pos, referencerType)
-	if r == nil {
-		return
-	}
-
-	referencer := r.(ast.Referencer)
-	if include {
-		locations = append(locations, referencer.Loc())
-	}
-
-	for _, ref := range referencer.References() {
-		locations = append(locations, ref.Location)
-	}
-
-	return
+	_ = "STUB: not implemented"
+	return nil
 }

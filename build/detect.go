@@ -3,15 +3,8 @@
 package build
 
 import (
-	"os"
-	"path/filepath"
-	"sort"
-	"strings"
-
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/ast"
 	"github.com/caixw/apidoc/v7/internal/lang"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // DetectConfig 检测 wd 内容并生成 Config 实例
@@ -19,55 +12,16 @@ import (
 // wd 只能为本地文件系统；
 // recursive 是否检测子目录；
 func DetectConfig(wd core.URI, recursive bool) (*Config, error) {
-	scheme, path := wd.Parse()
-	if scheme != "" && scheme != core.SchemeFile {
-		panic("参数 wd 只能为本地文件")
-	}
-
-	inputs, err := detectInput(path, recursive)
-	if err != nil {
-		return nil, err
-	}
-	if len(inputs) == 0 {
-		return nil, core.NewError(locale.ErrNotFoundSupportedLang)
-	}
-
-	cfg := &Config{
-		Version: ast.Version,
-		Inputs:  inputs,
-		Output: &Output{
-			Path: "./apidoc.xml",
-		},
-	}
-
-	if err = cfg.sanitize(wd); err != nil {
-		return nil, err
-	}
-	return cfg, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // 检测指定目录下的内容，并为其生成一个合适的 Input 实例。
 //
 // 检测依据为根据扩展名来做统计，数量最大且被支持的获胜。
 func detectInput(dir string, recursive bool) ([]*Input, error) {
-	exts, err := detectExts(dir, recursive)
-	if err != nil {
-		return nil, err
-	}
-
-	langs := detectLanguage(exts)
-
-	opts := make([]*Input, 0, len(langs))
-	for _, l := range langs {
-		opts = append(opts, &Input{
-			Lang:      l.ID,
-			Dir:       "./",
-			Exts:      l.Exts,
-			Recursive: recursive,
-		})
-	}
-
-	return opts, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 type language struct {
@@ -78,65 +32,13 @@ type language struct {
 // 根据 exts 计算每个语言对应的文件数量，并按倒序返回
 //
 // exts 参数为从 detectExts 中获取的返回值
-func detectLanguage(exts map[string]int) []*language {
-	langs := make([]*language, 0, len(exts))
+func detectLanguage(exts map[string]int) []*language { _ = "STUB: not implemented"; return nil }
 
-	for ext, count := range exts {
-		l := lang.GetByExt(ext)
-		if l == nil {
-			continue
-		}
-
-		found := false
-		for _, item := range langs {
-			if item.ID == l.ID {
-				item.count += count
-				found = true
-				break
-			}
-		}
-		if !found {
-			langs = append(langs, &language{
-				count:    count,
-				Language: *l,
-			})
-		}
-	} // end for
-
-	sort.SliceStable(langs, func(i, j int) bool {
-		return langs[i].count > langs[j].count
-	})
-
-	return langs
-}
+// end for
 
 // 返回 dir 目录下文件类型及对应的文件数量的一个集合。
 // recursive 表示是否查找子目录。
 func detectExts(dir string, recursive bool) (map[string]int, error) {
-	exts := map[string]int{}
-
-	walk := func(path string, fi os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if fi.IsDir() {
-			if !recursive && dir != path {
-				return filepath.SkipDir
-			}
-		} else {
-			ext := strings.ToLower(filepath.Ext(path))
-			if len(ext) > 0 {
-				exts[ext]++
-			}
-		}
-
-		return nil
-	}
-
-	if err := filepath.Walk(dir, walk); err != nil {
-		return nil, err
-	}
-
-	return exts, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }

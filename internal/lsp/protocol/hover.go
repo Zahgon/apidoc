@@ -3,8 +3,6 @@
 package protocol
 
 import (
-	"encoding/json"
-
 	"github.com/caixw/apidoc/v7/core"
 )
 
@@ -35,12 +33,4 @@ type Hover struct {
 }
 
 // MarshalJSON 允许在 hover 为空值是返回 null
-func (h *Hover) MarshalJSON() ([]byte, error) {
-	if h.Contents.Kind == "" {
-		return json.Marshal(nil)
-	}
-
-	type hoverShadow Hover
-	shadow := (*hoverShadow)(h)
-	return json.Marshal(shadow)
-}
+func (h *Hover) MarshalJSON() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }

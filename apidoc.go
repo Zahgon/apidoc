@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"log"
 	"net/http"
-	"path/filepath"
 	"regexp"
 	"time"
 
@@ -18,8 +17,6 @@ import (
 	"github.com/caixw/apidoc/v7/build"
 	"github.com/caixw/apidoc/v7/core"
 	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/docs"
-	"github.com/caixw/apidoc/v7/internal/locale"
 	"github.com/caixw/apidoc/v7/internal/lsp"
 )
 
@@ -39,23 +36,26 @@ type Config = build.Config
 // 如果不调用此函数，则默认会采用 internal/locale.DefaultLocaleID 的值。
 // 如果想采用当前系统的本地化信息，可以使用
 // github.com/issue9/localeutil.SystemLanguageTag 函数。
-func SetLocale(tag language.Tag) { locale.SetTag(tag) }
+func SetLocale(tag language.Tag) {
+	_ = "STUB: not implemented"
 
-// Locale 获取当前设置的本地化 ID
-func Locale() language.Tag { return locale.Tag() }
+	// Locale 获取当前设置的本地化 ID
+	return
+}
 
-// Locales 返回当前所有支持的本地化信息
-func Locales() []language.Tag { return locale.Tags() }
+func Locale() language.Tag {
+	_ = "STUB: not implemented"
+
+	// Locales 返回当前所有支持的本地化信息
+	return *new(language.Tag)
+}
+
+func Locales() []language.Tag { _ = "STUB: not implemented"; return nil }
 
 // Version 当前程序的版本号
 //
 // full 表示是否需要在版本号中包含编译日期和编译时的 Git 记录 ID。
-func Version(full bool) string {
-	if full {
-		return core.FullVersion()
-	}
-	return core.Version()
-}
+func Version(full bool) string { _ = "STUB: not implemented"; return "" }
 
 // Build 解析文档并输出文档内容
 //
@@ -64,7 +64,8 @@ func Version(full bool) string {
 //
 // NOTE: 如果需要从配置文件进行构建文档，可以采用 Config.Build
 func Build(h *core.MessageHandler, o *build.Output, i ...*build.Input) error {
-	return build.Build(h, o, i...)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Buffer 生成文档内容并返回
@@ -74,12 +75,14 @@ func Build(h *core.MessageHandler, o *build.Output, i ...*build.Input) error {
 //
 // NOTE: 如果需要从配置文件进行构建文档，可以采用 Config.Buffer
 func Buffer(h *core.MessageHandler, o *build.Output, i ...*build.Input) (*bytes.Buffer, error) {
-	return build.Buffer(h, o, i...)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // CheckSyntax 测试文档语法
 func CheckSyntax(h *core.MessageHandler, i ...*build.Input) error {
-	return build.CheckSyntax(h, i...)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // ServeLSP 提供 language server protocol 服务
@@ -89,7 +92,8 @@ func CheckSyntax(h *core.MessageHandler, i ...*build.Input) error {
 // timeout 表示服务端每次读取客户端时的超时时间，如果为 0 表示不会超时。
 // 超时并不会出错，而是重新开始读取数据，防止被读取一直阻塞，无法结束进程；
 func ServeLSP(header bool, t, addr string, timeout time.Duration, info, erro *log.Logger) error {
-	return lsp.Serve(header, t, addr, timeout, info, erro)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // Static 为 dir 指向的路径内容搭建一个静态文件服务
@@ -104,7 +108,8 @@ func ServeLSP(header bool, t, addr string, timeout time.Duration, info, erro *lo
 //
 //	http.Handle("/apidoc", apidoc.Static(...))
 func Static(dir core.URI, stylesheet bool, erro *log.Logger) http.Handler {
-	return docs.Handler(dir, stylesheet, erro)
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 // Server 用于生成查看文档中间件的配置项
@@ -117,70 +122,21 @@ type Server struct {
 	Erro        *log.Logger // 服务出错时的错误信息输出通道，默认采用 log.Default()
 }
 
-func (srv *Server) sanitize() {
-	if srv.Status == 0 {
-		srv.Status = http.StatusOK
-	}
-
-	if srv.Path == "" {
-		srv.Path = "/apidoc.xml"
-	}
-
-	if srv.ContentType == "" {
-		srv.ContentType = "application/xml"
-	}
-
-	if srv.Erro == nil {
-		srv.Erro = log.Default()
-	}
-}
+func (srv *Server) sanitize() { _ = "STUB: not implemented"; return }
 
 // Buffer 将 buf 作为文档内容生成中间件
 func (srv *Server) Buffer(buf []byte) http.Handler {
-	srv.sanitize()
-
-	buf = addStylesheet(buf)
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == srv.Path {
-			w.Header().Set("Content-Type", srv.ContentType)
-			w.WriteHeader(srv.Status)
-			w.Write(buf)
-			return
-		}
-
-		Static(srv.Dir, srv.Stylesheet, srv.Erro).ServeHTTP(w, r)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 // File 将 path 指向的内容作为文档内容生成中间件
 func (srv *Server) File(path core.URI) (http.Handler, error) {
-	data, err := path.ReadAll(nil)
-	if err != nil {
-		return nil, err
-	}
-
-	if srv.Path == "" {
-		file, err := path.File()
-		if err != nil {
-			return nil, err
-		}
-		srv.Path = "/" + filepath.Base(file)
-	}
-
-	return srv.Buffer(data), nil
+	_ = "STUB: not implemented"
+	return *new(http.Handler), nil
 }
 
 // 用于查找 <?xml 指令
 var procInst = regexp.MustCompile(`<\?xml .+ ?>`)
 
-func addStylesheet(data []byte) []byte {
-	pi := `
-<?xml-stylesheet type="text/xsl" href="` + docs.StylesheetURL("./") + `"?>`
-
-	if rslt := procInst.Find(data); len(rslt) > 0 {
-		return procInst.ReplaceAll(data, append(rslt, []byte(pi)...))
-	}
-
-	ret := make([]byte, 0, len(data)+len(pi))
-	return append(append(ret, pi...), data...)
-}
+func addStylesheet(data []byte) []byte { _ = "STUB: not implemented"; return nil }

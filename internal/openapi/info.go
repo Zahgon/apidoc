@@ -3,12 +3,8 @@
 package openapi
 
 import (
-	"github.com/issue9/validation/is"
-	"github.com/issue9/version"
-
 	"github.com/caixw/apidoc/v7/core"
 	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // Info 接口文档的基本信息
@@ -34,75 +30,12 @@ type License struct {
 	URL  string `json:"url,omitempty" yaml:"url,omitempty"`
 }
 
-func (info *Info) sanitize() *core.Error {
-	if info.Title == "" {
-		return core.NewError(locale.ErrIsEmpty, "title").WithField("title")
-	}
+func (info *Info) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if !version.SemVerValid(info.Version) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("version")
-	}
+func (l *License) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if info.TermsOfService != "" && !is.URL(info.TermsOfService) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("termsOfService")
-	}
+func newLicense(l *ast.Link) *License { _ = "STUB: not implemented"; return nil }
 
-	if info.Contact != nil {
-		if err := info.Contact.sanitize(); err != nil {
-			err.Field = "contact." + err.Field
-			return err
-		}
-	}
+func newContact(c *ast.Contact) *Contact { _ = "STUB: not implemented"; return nil }
 
-	if info.License != nil {
-		if err := info.License.sanitize(); err != nil {
-			err.Field = "license." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (l *License) sanitize() *core.Error {
-	if l.URL != "" && !is.URL(l.URL) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("url")
-	}
-
-	return nil
-}
-
-func newLicense(l *ast.Link) *License {
-	if l == nil {
-		return nil
-	}
-
-	return &License{
-		Name: l.Text.V(),
-		URL:  l.URL.V(),
-	}
-}
-
-func newContact(c *ast.Contact) *Contact {
-	if c == nil {
-		return nil
-	}
-
-	return &Contact{
-		Name:  c.Name.V(),
-		URL:   c.URL.V(),
-		Email: c.Email.V(),
-	}
-}
-
-func (c *Contact) sanitize() *core.Error {
-	if c.URL != "" && !is.URL(c.URL) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("url")
-	}
-
-	if c.Email != "" && !is.Email(c.Email) {
-		return core.NewError(locale.ErrInvalidFormat).WithField("email")
-	}
-
-	return nil
-}
+func (c *Contact) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }

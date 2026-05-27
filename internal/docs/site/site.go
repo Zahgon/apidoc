@@ -6,18 +6,7 @@
 package site
 
 import (
-	"encoding/xml"
-	"io/ioutil"
-	"os"
-
-	"github.com/issue9/errwrap"
-	"golang.org/x/text/language/display"
-
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/docs"
-	"github.com/caixw/apidoc/v7/internal/lang"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 const (
@@ -79,110 +68,14 @@ type command struct {
 }
 
 // Write 输出站点中所有需要自动生成的内容
-func Write(target core.URI) error {
-	site, d, err := gen()
-	if err != nil {
-		return err
-	}
+func Write(target core.URI) error { _ = "STUB: not implemented"; return nil }
 
-	if err := writeXML(target.Append(siteFilename), site, "\t"); err != nil {
-		return err
-	}
+func writeXML(uri core.URI, v any, indent string) error { _ = "STUB: not implemented"; return nil }
 
-	for filename, dd := range d {
-		if err := writeXML(target.Append(filename), dd, "\t"); err != nil {
-			return err
-		}
-	}
+// 统一代码风格，文件末尾加一空行。
 
-	return nil
-}
+func gen() (*site, map[string]*doc, error) { _ = "STUB: not implemented"; return nil, nil, nil }
 
-func writeXML(uri core.URI, v any, indent string) error {
-	data, err := xml.MarshalIndent(v, "", indent)
-	if err != nil {
-		return err
-	}
+func genDoc() (*doc, error) { _ = "STUB: not implemented"; return nil, nil }
 
-	path, err := uri.File()
-	if err != nil {
-		return err
-	}
-
-	var w errwrap.Buffer
-	w.WString(xml.Header).WString("\n").
-		WString("<!-- ").WString(docs.FileHeader).WString(" -->\n\n").
-		WBytes(data).
-		WString("\n") // 统一代码风格，文件末尾加一空行。
-
-	if w.Err != nil {
-		return w.Err
-	}
-	return ioutil.WriteFile(path, w.Bytes(), os.ModePerm)
-}
-
-func gen() (*site, map[string]*doc, error) {
-	site := &site{
-		Name:      core.Name,
-		Version:   ast.Version,
-		Repo:      core.RepoURL,
-		URL:       core.OfficialURL,
-		Languages: make([]language, 0, len(lang.Langs())),
-		Locales:   make([]loc, 0, len(locale.Tags())),
-	}
-	for _, lang := range lang.Langs() {
-		site.Languages = append(site.Languages, language{
-			ID:   lang.ID,
-			Name: lang.DisplayName,
-		})
-	}
-
-	tags := locale.Tags()
-	docs := make(map[string]*doc, len(tags))
-
-	for _, tag := range tags {
-		locale.SetTag(tag)
-
-		id := tag.String()
-		docFilename := buildDocFilename(id)
-
-		href := "index.xml"
-		if id != locale.DefaultLocaleID {
-			href = "index." + id + ".xml"
-		}
-		site.Locales = append(site.Locales, loc{
-			ID:    id,
-			Href:  href,
-			Title: display.Self.Name(tag),
-			Doc:   docFilename,
-		})
-
-		dd, err := genDoc()
-		if err != nil {
-			return nil, nil, err
-		}
-		docs[docFilename] = dd
-	}
-
-	return site, docs, nil
-}
-
-func genDoc() (*doc, error) {
-	doc := &doc{}
-
-	if err := doc.newCommands(); err != nil {
-		return nil, err
-	}
-	if err := doc.newConfig(); err != nil {
-		return nil, err
-	}
-	if err := doc.newSpec(&ast.APIDoc{}); err != nil {
-		return nil, err
-	}
-
-	return doc, nil
-}
-
-func buildDocFilename(id string) string {
-	return docBasename + id + ".xml"
-}
+func buildDocFilename(id string) string { _ = "STUB: not implemented"; return "" }

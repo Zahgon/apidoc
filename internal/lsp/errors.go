@@ -5,8 +5,6 @@ package lsp
 import (
 	"github.com/issue9/jsonrpc"
 	"golang.org/x/text/message"
-
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // 错误代码，部分为 lsp 特有
@@ -23,5 +21,6 @@ const (
 )
 
 func newError(code int, key message.Reference, v ...any) *jsonrpc.Error {
-	return jsonrpc.NewError(code, locale.Sprintf(key, v...))
+	_ = "STUB: not implemented"
+	return nil
 }

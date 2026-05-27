@@ -2,11 +2,6 @@
 
 package lang
 
-import (
-	"bytes"
-	"unicode"
-)
-
 // 接口定义了解析代码块的所有操作
 type blocker interface {
 	// 确定 l 的当前位置是否匹配 Blocker 的起始位置。
@@ -37,35 +32,16 @@ type (
 	}
 )
 
-func newString(begin, end, escape string) blocker {
-	return &stringBlock{
-		begin:  begin,
-		end:    end,
-		escape: escape,
-	}
-}
+func newString(begin, end, escape string) blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
-func newSingleComment(begin string) blocker {
-	return &singleComment{
-		begin:  begin,
-		begins: []byte(begin),
-	}
-}
+func newSingleComment(begin string) blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
 func newMultipleComment(begin, end, prefix string) blocker {
-	return &multipleComment{
-		begin:  begin,
-		end:    end,
-		prefix: []byte(prefix),
-
-		begins: []byte(begin),
-		ends:   []byte(end),
-	}
+	_ = "STUB: not implemented"
+	return *new(blocker)
 }
 
-func (b *stringBlock) beginFunc(l *parser) bool {
-	return l.Match(b.begin)
-}
+func (b *stringBlock) beginFunc(l *parser) bool { _ = "STUB: not implemented"; return false }
 
 // 从 l 的当前位置开始往后查找，直到找到 b 中定义的 end 字符串，
 // 将 l 中的指针移到该位置。
@@ -73,62 +49,34 @@ func (b *stringBlock) beginFunc(l *parser) bool {
 //
 // 第一个返回参数无用，仅是为了统一函数签名
 func (b *stringBlock) endFunc(l *parser) (data []byte, ok bool) {
-	for {
-		switch {
-		case l.AtEOF():
-			return nil, false
-		case (len(b.escape) > 0) && l.Match(b.escape):
-			l.Next(1)
-		case l.Match(b.end):
-			return nil, true
-		default:
-			l.Next(1)
-		}
-	} // end for
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
-func (b *singleComment) beginFunc(l *parser) bool {
-	return l.Match(b.begin)
-}
+// end for
+
+func (b *singleComment) beginFunc(l *parser) bool { _ = "STUB: not implemented"; return false }
 
 // 从 l 的当前位置往后开始查找连续的相同类型单行代码块。
 func (b *singleComment) endFunc(l *parser) (data []byte, ok bool) {
-	data = make([]byte, 0, 120)
-
-	for {
-		data = append(data, b.begins...)
-		bs, found := l.Delim('\n', true)
-		if !found { // 找不到换行符，直接填充到末尾
-			data = append(data, l.All()...)
-			break
-		}
-
-		data = append(data, bs...)
-		data = append(data, l.Spaces('\n')...)
-		if !l.Match(b.begin) { // 不是接连着的注释块了，结束当前的匹配
-			break
-		}
-	}
-
-	return convertSingleCommentToXML(data, b.begins), true
+	_ = "STUB: not implemented"
+	return nil, false
 }
 
-func (b *multipleComment) beginFunc(l *parser) bool {
-	return l.Match(b.begin)
-}
+// 找不到换行符，直接填充到末尾
+
+// 不是接连着的注释块了，结束当前的匹配
+
+func (b *multipleComment) beginFunc(l *parser) bool { _ = "STUB: not implemented"; return false }
 
 // 从 l 的当前位置一直到定义的 b.End 之间的所有字符。
 // 会对每一行应用 filterSymbols 规则。
 func (b *multipleComment) endFunc(l *parser) (data []byte, ok bool) {
-	data, found := l.DelimString(b.end, true)
-	if !found { // 没有找到结束符号，直接到达文件末尾
-		return nil, false
-	}
-
-	raw := make([]byte, 0, len(b.begins)+len(data))
-	raw = append(append(raw, b.begins...), data...)
-	return convertMultipleCommentToXML(raw, b.begins, b.ends, b.prefix), true
+	_ = "STUB: not implemented"
+	return nil, false
 }
+
+// 没有找到结束符号，直接到达文件末尾
 
 // 转换单行注释为一个合法的 XML
 //
@@ -139,112 +87,23 @@ func (b *multipleComment) endFunc(l *parser) (data []byte, ok bool) {
 // 会被转换成
 //
 //	xx
-func convertSingleCommentToXML(lines, begin []byte) []byte {
-	data := make([]byte, 0, len(lines))
+func convertSingleCommentToXML(lines, begin []byte) []byte { _ = "STUB: not implemented"; return nil }
 
-	newline := true
-	start := -1 // 零是一个有效的数组下标
-	for index, b := range lines {
-		switch {
-		case b == '\n':
-			if start > -1 {
-				for i := 0; i < index-start; i++ {
-					data = append(data, ' ')
-				}
-				start = -1
-			}
-			data = append(data, b)
-			newline = true
-		case newline:
-			switch {
-			case bytes.IndexByte(begin, b) >= 0 && start == -1:
-				start = index
-			case unicode.IsSpace(rune(b)) && start == -1:
-				data = append(data, b)
-			case bytes.IndexByte(begin, b) < 0:
-				if start > -1 {
-					for i := 0; i < index-start; i++ { // 替换之前字符为空格
-						data = append(data, ' ')
-					}
-					start = -1
-				}
-				data = append(data, b)
-				newline = false
-			}
-		default:
-			data = append(data, b)
-		}
-	}
+// 零是一个有效的数组下标
 
-	return data
-}
+// 替换之前字符为空格
 
 // 转换成合法的 XML 格式
 //
 // 功能与 convertSingleCommentToXML，针对多行注释
 func convertMultipleCommentToXML(data, begin, end, chars []byte) []byte {
-	ret := make([]byte, len(data))
-	copy(ret, data)
-
-	index := bytes.Index(data, begin)
-	if index >= 0 {
-		for i := range begin {
-			ret[index+i] = ' '
-		}
-	}
-
-	index = bytes.LastIndex(data, end)
-	if index >= 0 {
-		for i := range end {
-			ret[index+i] = ' '
-		}
-	}
-
-	return replaceSymbols(ret, chars)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // 替换特殊的符号为空格，使 lines 的内容为一个合法的 xml 文档
-func replaceSymbols(lines, chars []byte) []byte {
-	data := make([]byte, 0, len(lines))
+func replaceSymbols(lines, chars []byte) []byte { _ = "STUB: not implemented"; return nil }
 
-	newline := true
-	start := -1 // 零是一个有效的数组下标
-	for index, b := range lines {
-		switch {
-		case b == '\n':
-			if start > -1 {
-				for i := 0; i < index-start; i++ {
-					data = append(data, ' ')
-				}
-				start = -1
-			}
-			data = append(data, b)
-			newline = true
-		case newline:
-			switch {
-			case bytes.IndexByte(chars, b) >= 0 && start == -1:
-				start = index
-			case unicode.IsSpace(rune(b)):
-				if start > -1 {
-					for i := 0; i < index-start; i++ { // 替换之前字符为空格
-						data = append(data, ' ')
-					}
-					start = -1
-					newline = false
-				}
-				data = append(data, b)
-			case bytes.IndexByte(chars, b) < 0:
-				if start > -1 {
-					data = append(data, lines[start:index]...)
-					start = -1
-				}
-				data = append(data, b)
-				newline = false
-			}
-		default:
-			data = append(data, b)
-		}
-	}
+// 零是一个有效的数组下标
 
-	return data
-}
+// 替换之前字符为空格

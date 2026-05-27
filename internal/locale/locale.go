@@ -29,56 +29,39 @@ type Error struct {
 	l LocaleStringer
 }
 
-func setMessages(id string, messages map[string]string) {
-	tag := language.MustParse(id)
+func setMessages(id string, messages map[string]string) { _ = "STUB: not implemented"; return }
 
-	for key, val := range messages {
-		if err := message.SetString(tag, key, val); err != nil {
-			panic(err)
-		}
-	}
+// 保证 DefaultLocaleID 为第一个数组元素
 
-	// 保证 DefaultLocaleID 为第一个数组元素
-	if id == DefaultLocaleID {
-		ts := make([]language.Tag, 0, len(tags)+1)
-		tags = append(append(ts, tag), tags...)
-	} else {
-		tags = append(tags, tag)
-	}
-}
-
-func (err *Error) Error() string { return err.l.LocaleString(localePrinter) }
+func (err *Error) Error() string { _ = "STUB: not implemented"; return "" }
 
 // SetTag 切换本地化环境
-func SetTag(tag language.Tag) {
-	tag, _, _ = language.NewMatcher(tags).Match(tag)
-	localeTag = tag
-	localePrinter = message.NewPrinter(localeTag)
-}
+func SetTag(tag language.Tag) { _ = "STUB: not implemented"; return }
 
 // Tag 获取当前的本地化 ID
-func Tag() language.Tag { return localeTag }
+func Tag() language.Tag {
+	_ = "STUB: not implemented"
 
-// Tags 所有支持语言的列表
-func Tags() []language.Tag {
-	ret := make([]language.Tag, len(tags))
-	copy(ret, tags)
-	return ret
+	// Tags 所有支持语言的列表
+	return *new(language.Tag)
 }
+
+func Tags() []language.Tag { _ = "STUB: not implemented"; return nil }
 
 // Sprintf 类似 fmt.Sprintf，与特定的本地化绑定。
-func Sprintf(key message.Reference, v ...any) string {
-	return localePrinter.Sprintf(key, v...)
-}
+func Sprintf(key message.Reference, v ...any) string { _ = "STUB: not implemented"; return "" }
 
 // New 声明新的 Locale 对象
-func New(key message.Reference, v ...any) LocaleStringer { return localeutil.Phrase(key, v...) }
+func New(key message.Reference, v ...any) LocaleStringer {
+	_ = "STUB: not implemented"
+	return *new(LocaleStringer)
+}
 
 // NewError 返回本地化的错误对象
-func NewError(key message.Reference, v ...any) error { return &Error{l: localeutil.Phrase(key, v...)} }
+func NewError(key message.Reference, v ...any) error { _ = "STUB: not implemented"; return nil }
 
 // Translate 功能与 Sprintf 类似，但是可以指定本地化 ID 值。
 func Translate(localeID string, key message.Reference, v ...any) string {
-	tag, _ := language.MatchStrings(language.NewMatcher(tags), localeID)
-	return message.NewPrinter(tag).Sprintf(key, v...)
+	_ = "STUB: not implemented"
+	return ""
 }

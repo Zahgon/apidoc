@@ -9,29 +9,17 @@ type pascalStringBlock struct {
 	escape string
 }
 
-func newPascalStringBlock(symbol byte) blocker {
-	s := string(symbol)
-	return &pascalStringBlock{
-		symbol: s,
-		escape: s + s,
-	}
-}
+func newPascalStringBlock(symbol byte) blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
-func (b *pascalStringBlock) beginFunc(l *parser) bool {
-	return l.Match(b.symbol)
-}
+func (b *pascalStringBlock) beginFunc(l *parser) bool { _ = "STUB: not implemented"; return false }
 
 func (b *pascalStringBlock) endFunc(l *parser) (data []byte, ok bool) {
-	for {
-		switch {
-		case l.AtEOF():
-			return nil, false
-		case l.Match(b.escape): // 转义
-			break
-		case l.Match(b.symbol): // 结束
-			return nil, true
-		default:
-			l.Next(1)
-		}
-	} // end for
+	_ = "STUB: not implemented"
+	return nil, false
 }
+
+// 转义
+
+// 结束
+
+// end for

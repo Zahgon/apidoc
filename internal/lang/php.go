@@ -16,49 +16,15 @@ type phpDocBlock struct {
 // herodoc 和 nowdoc 的实现。
 //
 // http://php.net/manual/zh/language.types.string.php#language.types.string.syntax.heredoc
-func newPHPDocBlock() blocker {
-	return &phpDocBlock{
-		doctype: phpHerodoc,
-	}
-}
+func newPHPDocBlock() blocker { _ = "STUB: not implemented"; return *new(blocker) }
 
-func (b *phpDocBlock) beginFunc(l *parser) bool {
-	prev := l.Current()
+func (b *phpDocBlock) beginFunc(l *parser) bool { _ = "STUB: not implemented"; return false }
 
-	if !l.Match("<<<") {
-		return false
-	}
+// <<< 之后直接是换行符，则应该退回 <<< 字符
 
-	token, found := l.Delim('\n', true)
-	if !found || len(token) <= 1 { // <<< 之后直接是换行符，则应该退回 <<< 字符
-		l.Move(prev)
-		return false
-	}
-	token = token[:len(token)-1] // l.delim 会带上换行符，需要去掉
-
-	if token[0] == '\'' && token[len(token)-1] == '\'' ||
-		token[0] == '"' && token[len(token)-1] == '"' {
-		b.doctype = phpNowdoc
-		token = token[1 : len(token)-1]
-	}
-
-	b.token1 = "\n" + string(token) + "\n"
-	b.token2 = "\n" + string(token) + ";\n"
-
-	return true
-}
+// l.delim 会带上换行符，需要去掉
 
 func (b *phpDocBlock) endFunc(l *parser) (data []byte, ok bool) {
-	for {
-		switch {
-		case l.AtEOF():
-			return nil, false
-		case l.Match(b.token1):
-			return nil, true
-		case l.Match(b.token2):
-			return nil, true
-		default:
-			l.Next(1)
-		}
-	}
+	_ = "STUB: not implemented"
+	return nil, false
 }

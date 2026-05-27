@@ -3,8 +3,6 @@
 package lexer
 
 import (
-	"unicode/utf8"
-
 	"github.com/caixw/apidoc/v7/core"
 )
 
@@ -18,44 +16,20 @@ type Position struct {
 }
 
 // Equal 判断与 v 是否相等
-func (p Position) Equal(v Position) bool { return p.Offset == v.Offset }
+func (p Position) Equal(v Position) bool { _ = "STUB: not implemented"; return false }
 
 // AddRune 向后移动一个字符
-func (p Position) AddRune(r rune) Position { return p.add(r, utf8.RuneLen(r)) }
+func (p Position) AddRune(r rune) Position { _ = "STUB: not implemented"; return *new(Position) }
 
 // SubRune 向前移动一个字符
-func (p Position) SubRune(r rune) Position { return p.sub(r, utf8.RuneLen(r)) }
+func (p Position) SubRune(r rune) Position { _ = "STUB: not implemented"; return *new(Position) }
 
 // 将 p 的定位回滚一个文字 r
 //
 // 要求 size 的值必须与 r 的字节长度相等。
-func (p Position) sub(r rune, size int) Position {
-	pos := p
-
-	pos.Offset -= size
-	if r == '\n' {
-		pos.Line--
-		pos.Character = 0
-	} else {
-		pos.Character--
-	}
-
-	return pos
-}
+func (p Position) sub(r rune, size int) Position { _ = "STUB: not implemented"; return *new(Position) }
 
 // add 将 p 的定位往后移动一个字符 r
 //
 // 要求 size 的值必须与 r 的字节长度相等。
-func (p Position) add(r rune, size int) Position {
-	pos := p
-
-	pos.Offset += size
-	if r == '\n' {
-		pos.Line++
-		pos.Character = 0
-	} else {
-		pos.Character++
-	}
-
-	return pos
-}
+func (p Position) add(r rune, size int) Position { _ = "STUB: not implemented"; return *new(Position) }

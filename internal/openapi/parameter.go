@@ -4,7 +4,6 @@ package openapi
 
 import (
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // Parameter.IN 的可选值
@@ -36,32 +35,6 @@ type Parameter struct {
 	Ref string `json:"$ref,omitempty" yaml:"$ref,omitempty"`
 }
 
-func (p *Parameter) sanitize() *core.Error {
-	if err := p.Style.sanitize(); err != nil {
-		return err
-	}
+func (p *Parameter) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	switch p.IN {
-	case ParameterINCookie, ParameterINHeader, ParameterINPath, ParameterINQuery:
-	default:
-		return core.NewError(locale.ErrInvalidValue).WithField("in")
-	}
-
-	return nil
-}
-
-func (h *Header) sanitize() *core.Error {
-	if err := h.Style.sanitize(); err != nil {
-		return err
-	}
-
-	if h.IN != "" {
-		return core.NewError(locale.ErrInvalidValue).WithField("in")
-	}
-
-	if h.Name != "" {
-		return core.NewError(locale.ErrInvalidValue).WithField("name")
-	}
-
-	return nil
-}
+func (h *Header) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }

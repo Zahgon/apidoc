@@ -4,19 +4,9 @@ package build
 
 import (
 	"bytes"
-	"encoding/xml"
-	"strings"
-	"time"
-
-	"github.com/issue9/errwrap"
-	"github.com/issue9/version"
 
 	"github.com/caixw/apidoc/v7/core"
 	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/docs"
-	"github.com/caixw/apidoc/v7/internal/locale"
-	"github.com/caixw/apidoc/v7/internal/openapi"
-	"github.com/caixw/apidoc/v7/internal/xmlenc"
 )
 
 // 几种输出的类型
@@ -70,123 +60,18 @@ type Output struct {
 	xml      bool      // 是否为 xml 内容
 }
 
-func (o *Output) contains(tags ...string) bool {
-	if len(o.Tags) == 0 {
-		return true
-	}
+func (o *Output) contains(tags ...string) bool { _ = "STUB: not implemented"; return false }
 
-	for _, t := range o.Tags {
-		for _, tag := range tags {
-			if tag == t {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (o *Output) sanitize() error {
-	if o.Type == "" {
-		o.Type = APIDocXML
-	}
-
-	if o.Version != "" {
-		if !version.SemVerValid(o.Version) {
-			return core.NewError(locale.ErrInvalidFormat).WithField("version")
-		}
-	}
-
-	switch o.Type {
-	case APIDocXML:
-		o.marshal = o.apidocMarshaler
-	case OpenapiJSON:
-		o.marshal = openapi.JSON
-	case OpenapiYAML:
-		o.marshal = openapi.YAML
-	default:
-		return core.NewError(locale.ErrInvalidValue).WithField("type")
-	}
-
-	o.xml = strings.HasSuffix(o.Type, "+xml")
-	if o.xml {
-		if o.Style == "" {
-			o.Style = docs.StylesheetURL(core.OfficialURL)
-		}
-
-		o.procInst = []string{
-			xml.Header,
-			`<?xml-stylesheet type="text/xsl" href="` + o.Style + `"?>`,
-		}
-	}
-
-	if len(o.Path) > 0 {
-		scheme, _ := o.Path.Parse()
-		if scheme != core.SchemeFile && scheme != "" {
-			return core.NewError(locale.ErrInvalidURIScheme, scheme).WithField("path")
-		}
-	}
-
-	return nil
-}
+func (o *Output) sanitize() error { _ = "STUB: not implemented"; return nil }
 
 func (o *Output) apidocMarshaler(d *ast.APIDoc) ([]byte, error) {
-	if !o.Namespace {
-		return xmlenc.Encode("\t", d, "", "")
-	}
-	return xmlenc.Encode("\t", d, core.XMLNamespace, o.NamespacePrefix)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (o *Output) buffer(d *ast.APIDoc) (*bytes.Buffer, error) {
-	filterDoc(d, o)
-
-	if o.Version != "" {
-		d.Version = &ast.VersionAttribute{Value: xmlenc.String{Value: o.Version}}
-	}
-
-	d.Created = &ast.DateAttribute{Value: ast.Date{Value: time.Now()}}
-	d.APIDoc = &ast.APIDocVersionAttribute{Value: xmlenc.String{Value: ast.Version}}
-
-	data, err := o.marshal(d)
-	if err != nil {
-		return nil, err
-	}
-
-	var buf errwrap.Buffer
-	if o.xml {
-		for _, v := range o.procInst {
-			buf.WString(v).WByte('\n')
-		}
-	}
-	buf.WBytes(data)
-	if buf.Err != nil {
-		return nil, buf.Err
-	}
-
-	return &buf.Buffer, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func filterDoc(d *ast.APIDoc, o *Output) {
-	if len(o.Tags) == 0 {
-		return
-	}
-
-	tags := make([]*ast.Tag, 0, len(o.Tags))
-	for _, tag := range d.Tags {
-		if o.contains(tag.Name.V()) {
-			tags = append(tags, tag)
-		}
-	}
-	d.Tags = tags
-
-	apis := make([]*ast.API, 0, len(d.APIs))
-LOOP:
-	for _, api := range d.APIs {
-		for _, tag := range api.Tags {
-			if o.contains(tag.V()) {
-				apis = append(apis, api)
-				continue LOOP
-			}
-		}
-	}
-	d.APIs = apis
-}
+func filterDoc(d *ast.APIDoc, o *Output) { _ = "STUB: not implemented"; return }

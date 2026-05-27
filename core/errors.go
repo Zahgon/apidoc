@@ -3,11 +3,7 @@
 package core
 
 import (
-	"github.com/issue9/localeutil"
-	"github.com/issue9/sliceutil"
 	"golang.org/x/text/message"
-
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // HTTPError 表示 HTTP 状态码的错误
@@ -48,97 +44,51 @@ const (
 
 // NewHTTPError 声明 HTTPError 实例
 func NewHTTPError(code int, key message.Reference, v ...any) *HTTPError {
-	return &HTTPError{
-		error: localeutil.Error(key, v...),
-		Code:  code,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (err *Error) Error() string {
-	var detail string
-	if !err.Location.IsEmpty() {
-		detail = err.Location.String()
-	}
+func (err *Error) Error() string { _ = "STUB: not implemented"; return "" }
 
-	if err.Field != "" {
-		detail += ":" + err.Field
-	}
-
-	// ErrMessage = "%s 位次于 %s:%d"
-	return locale.Sprintf(locale.ErrMessage, err.Err.Error(), detail)
-}
+// ErrMessage = "%s 位次于 %s:%d"
 
 // Unwrap 实现 errors.Unwrap 接口
-func (err *Error) Unwrap() error { return err.Err }
+func (err *Error) Unwrap() error {
+	_ = "STUB: not implemented"
 
-// Is 实现 errors.Is 接口
-func (err *Error) Is(target error) bool { return err.Err == target }
+	// Is 实现 errors.Is 接口
+	return nil
+}
+
+func (err *Error) Is(target error) bool { _ = "STUB: not implemented"; return false }
 
 // Relate 添加关联的错误信息
-func (err *Error) Relate(loc Location, msg string) *Error {
-	if err.Related == nil {
-		err.Related = make([]RelatedInformation, 0, 1)
-	}
-
-	err.Related = append(err.Related, RelatedInformation{Location: loc, Message: msg})
-	return err
-}
+func (err *Error) Relate(loc Location, msg string) *Error { _ = "STUB: not implemented"; return nil }
 
 // WithField 为语法错误修改或添加具体的错误字段
-func (err *Error) WithField(field string) *Error {
-	err.Field = field
-	return err
-}
+func (err *Error) WithField(field string) *Error { _ = "STUB: not implemented"; return nil }
 
 // WithLocation  为语法错误添加定位信息
-func (err *Error) WithLocation(loc Location) *Error {
-	err.Location = loc
-	return err
-}
+func (err *Error) WithLocation(loc Location) *Error { _ = "STUB: not implemented"; return nil }
 
 // AddTypes 为语法错误添加错误类型
-func (err *Error) AddTypes(t ...ErrorType) *Error {
-	if err.Types == nil {
-		err.Types = t
-		return err
-	}
-
-	for _, typ := range t {
-		if sliceutil.Count(err.Types, func(i ErrorType) bool { return i == typ }) <= 0 {
-			err.Types = append(err.Types, typ)
-		}
-	}
-
-	return err
-}
+func (err *Error) AddTypes(t ...ErrorType) *Error { _ = "STUB: not implemented"; return nil }
 
 // NewError 返回 *Error 实例
-func NewError(key message.Reference, v ...any) *Error {
-	return &Error{Err: locale.NewError(key, v...)}
-}
+func NewError(key message.Reference, v ...any) *Error { _ = "STUB: not implemented"; return nil }
 
 // WithError 采用 err 实例 *Error 实例
-func WithError(err error) *Error {
-	var types []ErrorType
-
-	if serr, ok := err.(*Error); ok {
-		err = serr.Err
-		types = serr.Types
-	}
-
-	return (&Error{Err: err}).AddTypes(types...)
-}
+func WithError(err error) *Error { _ = "STUB: not implemented"; return nil }
 
 // NewError 在当前位置生成语法错误信息
 //
 // 其中的 msg 和 val 会被转换成本地化的内容保存。
 func (l Location) NewError(key message.Reference, v ...any) *Error {
-	return &Error{Err: locale.NewError(key, v...), Location: l}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // WithError 在当前位置生成语法错误信息
 //
 // 若 err 本身就是 *Error 类型，则会更新其 location 和 Field 两个字段的信息。
-func (l Location) WithError(err error) *Error {
-	return &Error{Err: err, Location: l}
-}
+func (l Location) WithError(err error) *Error { _ = "STUB: not implemented"; return nil }

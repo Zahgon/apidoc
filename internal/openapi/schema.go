@@ -34,10 +34,12 @@ var typeMaps = map[string]string{
 }
 
 func fromDocType(t string) string {
-	return typeMaps[t]
+	_ = "STUB: not implemented"
+
+	// Schema 定义了输出和输出的数据类型
+	return ""
 }
 
-// Schema 定义了输出和输出的数据类型
 type Schema struct {
 	Type string `json:"type,omitempty" yaml:"type,omitempty"`
 	Enum []any  `json:"enum,omitempty" yaml:"enum,omitempty"`
@@ -110,96 +112,23 @@ type Discriminator struct {
 	Mapping      map[string]string `json:"mapping,omitempty" yaml:"mapping,omitempty"`
 }
 
-func (s *Schema) sanitize() *core.Error {
-	if s.ExternalDocs != nil {
-		if err := s.ExternalDocs.sanitize(); err != nil {
-			err.Field = "externalDocs." + err.Field
-			return err
-		}
-	}
+func (s *Schema) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }
 
-	if s.Items != nil {
-		if err := s.Items.sanitize(); err != nil {
-			err.Field = "items." + err.Field
-			return err
-		}
-	}
-
-	for name, obj := range s.Properties {
-		if err := obj.sanitize(); err != nil {
-			err.Field = "[" + name + "]." + err.Field
-			return err
-		}
-	}
-
-	return nil
-}
-
-func newXML(doc *ast.APIDoc, p *ast.Param) *XML {
-	var ns string
-	prefix := p.XMLNSPrefix.V()
-	if xmlns := doc.XMLNamespace(prefix); xmlns != nil {
-		ns = xmlns.URN.V()
-	}
-	return &XML{
-		Name:      p.Name.V(),
-		Namespace: ns,
-		Prefix:    prefix,
-		Attribute: p.XMLAttr.V(),
-		Wrapped:   p.XMLWrapped != nil && p.XMLWrapped.V() != "",
-	}
-}
+func newXML(doc *ast.APIDoc, p *ast.Param) *XML { _ = "STUB: not implemented"; return nil }
 
 // chkArray 是否需要检测当前类型是否为数组
 func newSchema(doc *ast.APIDoc, p *ast.Param, chkArray bool) *Schema {
-	if chkArray && p.Array.V() {
-		return &Schema{
-			Type:  TypeArray,
-			Items: newSchema(doc, p, false),
-			XML:   newXML(doc, p),
-		}
-	}
-
-	s := &Schema{
-		Type:        fromDocType(p.Type.V()),
-		Title:       p.Summary.V(),
-		Description: p.Description.V(),
-		Default:     p.Default.V(),
-		Deprecated:  p.Deprecated != nil,
-		Required:    make([]string, 0, len(p.Items)),
-		XML:         newXML(doc, p),
-	}
-
-	// enum
-	if len(p.Enums) > 0 {
-		s.Enum = make([]any, 0, len(p.Enums))
-		for _, e := range p.Enums {
-			s.Enum = append(s.Enum, e.Value.V())
-		}
-	}
-
-	// Properties / Required
-	if len(p.Items) > 0 { // 如果是对象，类型改为空
-		s.Type = ""
-		s.Properties = make(map[string]*Schema, len(p.Items))
-
-		for _, item := range p.Items {
-			name := item.Name.V()
-			if item.Array.V() && item.XMLWrapped.V() != "" {
-				name = item.XMLWrapped.V()
-			}
-
-			s.Properties[name] = newSchema(doc, item, true)
-			if !item.Optional.V() {
-				s.Required = append(s.Required, item.Name.V())
-			}
-		}
-	}
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
+
+// enum
+
+// Properties / Required
+// 如果是对象，类型改为空
 
 // chkArray 是否需要检测当前类型是否为数组
 func newSchemaFromRequest(doc *ast.APIDoc, p *ast.Request, chkArray bool) *Schema {
-	return newSchema(doc, p.Param(), chkArray)
+	_ = "STUB: not implemented"
+	return nil
 }

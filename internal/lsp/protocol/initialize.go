@@ -3,8 +3,6 @@
 package protocol
 
 import (
-	"path"
-
 	"github.com/caixw/apidoc/v7/core"
 )
 
@@ -61,26 +59,7 @@ type InitializeParams struct {
 }
 
 // Folders 获取客户端当前打开的所有项目
-func (p *InitializeParams) Folders() []WorkspaceFolder {
-	if len(p.WorkspaceFolders) > 0 {
-		return p.WorkspaceFolders
-	}
-
-	if p.RootURI != "" {
-		return []WorkspaceFolder{{
-			Name: path.Base(string(p.RootURI)),
-			URI:  p.RootURI,
-		}}
-	}
-	if p.RootPath != "" {
-		return []WorkspaceFolder{{
-			Name: path.Base(p.RootPath),
-			URI:  core.URI(p.RootPath),
-		}}
-	}
-
-	return nil
-}
+func (p *InitializeParams) Folders() []WorkspaceFolder { _ = "STUB: not implemented"; return nil }
 
 // ServerInfo 终端的信息，同时用于描述服务和客户端。
 //

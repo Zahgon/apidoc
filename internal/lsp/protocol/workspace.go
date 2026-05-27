@@ -3,8 +3,6 @@
 package protocol
 
 import (
-	"strings"
-
 	"github.com/caixw/apidoc/v7/core"
 )
 
@@ -147,18 +145,4 @@ type WorkspaceEditClientCapabilities struct {
 }
 
 // Contains 当前 WorkspaceFolder 是否包含了 uri 这个文件或是目录
-func (f WorkspaceFolder) Contains(path core.URI) bool {
-	fs, fp := f.URI.Parse()
-	ps, pp := path.Parse()
-
-	switch {
-	case (fs == core.SchemeFile || fs == "") && (ps == core.SchemeFile || ps == ""):
-		return strings.HasPrefix(pp, fp)
-	case fs == core.SchemeHTTP && ps == core.SchemeHTTP:
-		return strings.HasPrefix(pp, fp)
-	case fs == core.SchemeHTTPS && ps == core.SchemeHTTPS:
-		return strings.HasPrefix(pp, fp)
-	default:
-		return false
-	}
-}
+func (f WorkspaceFolder) Contains(path core.URI) bool { _ = "STUB: not implemented"; return false }

@@ -103,56 +103,17 @@ var typeTagsMap = map[core.ErrorType]DiagnosticTag{
 
 // NewPublishDiagnosticsParams 声明空的 PublishDiagnosticsParams 对象
 func NewPublishDiagnosticsParams(uri core.URI) *PublishDiagnosticsParams {
-	return &PublishDiagnosticsParams{
-		URI:         uri,
-		Diagnostics: []Diagnostic{},
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // AppendDiagnostic 将 core.Message 添加至诊断数据
 func (p *PublishDiagnosticsParams) AppendDiagnostic(err *core.Error, msgType core.MessageType) {
-	switch msgType {
-	case core.Erro:
-		p.Diagnostics = append(p.Diagnostics, buildDiagnostic(err, DiagnosticSeverityError))
-	case core.Warn:
-		p.Diagnostics = append(p.Diagnostics, buildDiagnostic(err, DiagnosticSeverityWarning))
-	case core.Info:
-		p.Diagnostics = append(p.Diagnostics, buildDiagnostic(err, DiagnosticSeverityInformation))
-	case core.Succ:
-		return
-	default:
-		panic("unreached")
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
 func buildDiagnostic(err *core.Error, severity DiagnosticSeverity) Diagnostic {
-	var tags []DiagnosticTag
-	if len(err.Types) > 0 {
-		for _, typ := range err.Types {
-			if tag, found := typeTagsMap[typ]; found {
-				tags = append(tags, tag)
-			}
-		}
-	}
-
-	msg := err.Error()
-	if err.Err != nil {
-		msg = err.Err.Error()
-	}
-
-	d := Diagnostic{
-		Range:    err.Location.Range,
-		Message:  msg,
-		Severity: severity,
-		Source:   core.Name,
-	}
-	if len(tags) > 0 {
-		d.Tags = tags
-	}
-
-	if len(err.Related) > 0 {
-		d.RelatedInformation = err.Related
-	}
-
-	return d
+	_ = "STUB: not implemented"
+	return *new(Diagnostic)
 }

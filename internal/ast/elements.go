@@ -259,102 +259,49 @@ type (
 )
 
 // V 返回当前富文本中的内容
-func (r *Richtext) V() string {
-	if r == nil || r.Text == nil {
-		return ""
-	}
-	return r.Text.Value.Value
-}
+func (r *Richtext) V() string { _ = "STUB: not implemented"; return "" }
 
 // V 返回当前属性实际表示的值
-func (s *Element) V() string {
-	if s == nil {
-		return ""
-	}
-	return s.Content.Value
-}
+func (s *Element) V() string { _ = "STUB: not implemented"; return "" }
 
 // V 返回当前属性实际表示的值
-func (s *TagValue) V() string {
-	if s == nil {
-		return ""
-	}
-	return s.Content.Value
-}
+func (s *TagValue) V() string { _ = "STUB: not implemented"; return "" }
 
 // V 返回当前属性实际表示的值
-func (s *ServerValue) V() string {
-	if s == nil {
-		return ""
-	}
-	return s.Content.Value
-}
+func (s *ServerValue) V() string { _ = "STUB: not implemented"; return "" }
 
 // Definition Definitioner.Definition
-func (s *TagValue) Definition() *Definition {
-	return s.definition
-}
+func (s *TagValue) Definition() *Definition { _ = "STUB: not implemented"; return nil }
 
 // Definition Definitioner.Definition
-func (s *ServerValue) Definition() *Definition {
-	return s.definition
-}
+func (s *ServerValue) Definition() *Definition { _ = "STUB: not implemented"; return nil }
 
 // EncodeXML Encoder.EncodeXML
-func (cdata *CData) EncodeXML() (string, error) {
-	return cdata.Value.Value, nil
-}
+func (cdata *CData) EncodeXML() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // EncodeXML Encoder.EncodeXML
 func (s *Content) EncodeXML() (string, error) {
-	return s.Value, nil
+	_ = "STUB: not implemented"
+	return "",
+
+		// EncodeXML Encoder.EncodeXML
+		//
+		// 示例代码的内容，会在此处去掉其前导的空格
+		nil
 }
 
-// EncodeXML Encoder.EncodeXML
-//
-// 示例代码的内容，会在此处去掉其前导的空格
-func (v *ExampleValue) EncodeXML() (string, error) {
-	return trimLeftSpace(v.Value.Value), nil
-}
+func (v *ExampleValue) EncodeXML() (string, error) { _ = "STUB: not implemented"; return "", nil }
 
 // Param 转换成 Param 对象
 //
 // Request 可以说是 Param 的超级，两者在大部分情况下能用。
-func (r *Request) Param() *Param {
-	if r == nil {
-		return nil
-	}
-
-	return &Param{
-		XML:         r.XML,
-		Name:        r.Name,
-		Type:        r.Type,
-		Deprecated:  r.Deprecated,
-		Optional:    &BoolAttribute{Value: Bool{Value: true}},
-		Array:       r.Array,
-		Items:       r.Items,
-		Summary:     r.Summary,
-		Enums:       r.Enums,
-		Description: r.Description,
-	}
-}
+func (r *Request) Param() *Param { _ = "STUB: not implemented"; return nil }
 
 // XMLNamespace 获取指定前缀名称的命名空间
-func (doc *APIDoc) XMLNamespace(prefix string) *XMLNamespace {
-	for _, ns := range doc.XMLNamespaces {
-		if ns.Prefix.V() == prefix {
-			return ns
-		}
-	}
-	return nil
-}
+func (doc *APIDoc) XMLNamespace(prefix string) *XMLNamespace { _ = "STUB: not implemented"; return nil }
 
 // References impl Referencer
-func (tag *Tag) References() []*Reference {
-	return tag.references
-}
+func (tag *Tag) References() []*Reference { _ = "STUB: not implemented"; return nil }
 
 // References impl Referencer
-func (srv *Server) References() []*Reference {
-	return srv.references
-}
+func (srv *Server) References() []*Reference { _ = "STUB: not implemented"; return nil }

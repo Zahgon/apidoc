@@ -3,39 +3,13 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
-	"strings"
 
 	"github.com/issue9/cmdopt"
-	"golang.org/x/text/language/display"
-
-	"github.com/caixw/apidoc/v7"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
-func initLocale(command *cmdopt.CmdOpt) {
-	command.New("locale", locale.Sprintf(locale.CmdLocaleUsage), doLocale)
-}
+func initLocale(command *cmdopt.CmdOpt) { _ = "STUB: not implemented"; return }
 
-func doLocale(w io.Writer) error {
-	locales := make(map[string]string, len(apidoc.Locales()))
+func doLocale(w io.Writer) error { _ = "STUB: not implemented"; return nil }
 
-	// 计算各列的最大长度值
-	var maxID int
-	for _, tag := range apidoc.Locales() {
-		id := tag.String()
-		calcMaxWidth(id, &maxID)
-		locales[id] = display.Self.Name(tag)
-	}
-	maxID += tail
-
-	for k, v := range locales {
-		id := k + strings.Repeat(" ", maxID-len(k))
-		if _, err := fmt.Fprintln(w, id, v); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+// 计算各列的最大长度值

@@ -3,13 +3,7 @@
 package ast
 
 import (
-	"bytes"
-	"errors"
-	"io"
-	"sort"
-
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/locale"
 	"github.com/caixw/apidoc/v7/internal/xmlenc"
 )
 
@@ -17,123 +11,31 @@ import (
 //
 // g 必须是一个阻塞函数，直到所有代码块都写入参数之后，才能返回。
 func (doc *APIDoc) ParseBlocks(h *core.MessageHandler, g func(chan core.Block)) {
-	done := make(chan struct{})
-	blocks := make(chan core.Block, 50)
-
-	go func() {
-		for block := range blocks {
-			doc.Parse(h, block)
-		}
-		done <- struct{}{}
-	}()
-
-	g(blocks)
-	close(blocks)
-	<-done
+	_ = "STUB: not implemented"
+	return
 }
 
 // Parse 将注释块的内容添加到当前文档
-func (doc *APIDoc) Parse(h *core.MessageHandler, b core.Block) {
-	if !isValid(b) {
-		return
-	}
+func (doc *APIDoc) Parse(h *core.MessageHandler, b core.Block) { _ = "STUB: not implemented"; return }
 
-	p, err := xmlenc.NewParser(h, b)
-	if err != nil {
-		h.Error(err)
-		return
-	}
+// apidoc 已经初始化，检测依赖于 apidoc 的字段
 
-	switch getTagName(p) {
-	case "api":
-		if doc.APIs == nil {
-			doc.APIs = make([]*API, 0, 100)
-		}
+// 多个 apidoc 标签
 
-		api := &API{doc: doc}
-		xmlenc.Decode(p, api, core.XMLNamespace)
-		doc.APIs = append(doc.APIs, api)
-
-		if doc.Title.V() != "" { // apidoc 已经初始化，检测依赖于 apidoc 的字段
-			api.sanitizeTags(p)
-		}
-	case "apidoc":
-		if doc.Title != nil { // 多个 apidoc 标签
-			err := b.Location.NewError(locale.ErrDuplicateValue).WithField("apidoc").
-				Relate(doc.Location, locale.Sprintf(locale.ErrDuplicateValue))
-			h.Error(err)
-			return
-		}
-		xmlenc.Decode(p, doc, core.XMLNamespace)
-	default:
-		return
-	}
-
-	// api 进入 doc 的顺序是未知的，进行排序可以保证文档的顺序一致。
-	doc.sortAPIs()
-}
+// api 进入 doc 的顺序是未知的，进行排序可以保证文档的顺序一致。
 
 // 简单预判是否是一个合规的 apidoc 内容
-func isValid(b core.Block) bool {
-	bs := bytes.TrimSpace(b.Data)
-	if len(bs) < minSize {
-		return false
-	}
+func isValid(b core.Block) bool { _ = "STUB: not implemented"; return false }
 
-	// 去除空格之后，必须保证以 < 开头，且不能以 </ 开关。
-	return bs[0] == '<' && bs[1] != '/'
-}
+// 去除空格之后，必须保证以 < 开头，且不能以 </ 开关。
 
 // 获取根标签的名称
-func getTagName(p *xmlenc.Parser) string {
-	start := p.Current()
-	for {
-		t, _, err := p.Token()
-		if errors.Is(err, io.EOF) {
-			return ""
-		} else if err != nil { // 获取第一个元素名称就出错，说明不是一个合则的 XML，直接忽略。
-			return ""
-		}
+func getTagName(p *xmlenc.Parser) string { _ = "STUB: not implemented"; return "" }
 
-		switch elem := t.(type) {
-		case *xmlenc.StartElement:
-			p.Move(start)
-			return elem.Name.Local.Value
-		case *xmlenc.EndElement, *xmlenc.CData: // 表示是一个非法的 XML，忽略！
-			return ""
-		default: // 其它标签忽略
-		}
-	}
-}
+// 获取第一个元素名称就出错，说明不是一个合则的 XML，直接忽略。
 
-func (doc *APIDoc) sortAPIs() {
-	sort.SliceStable(doc.APIs, func(i, j int) bool {
-		ii := doc.APIs[i]
-		jj := doc.APIs[j]
+// 表示是一个非法的 XML，忽略！
 
-		var iip string
-		if ii.Path != nil && ii.Path.Path != nil {
-			iip = ii.Path.Path.V()
-		}
+// 其它标签忽略
 
-		var jjp string
-		if jj.Path != nil && jj.Path.Path != nil {
-			jjp = jj.Path.Path.V()
-		}
-
-		var iim string
-		if ii.Method != nil {
-			iim = ii.Method.V()
-		}
-
-		var jjm string
-		if jj.Method != nil {
-			jjm = jj.Method.V()
-		}
-
-		if iip == jjp {
-			return iim < jjm
-		}
-		return iip < jjp
-	})
-}
+func (doc *APIDoc) sortAPIs() { _ = "STUB: not implemented"; return }

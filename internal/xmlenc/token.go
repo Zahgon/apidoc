@@ -60,20 +60,10 @@ type (
 )
 
 // Match 是否与 end 相匹配
-func (s *StartElement) Match(end *EndElement) bool {
-	return s.Name.Equal(end.Name)
-}
+func (s *StartElement) Match(end *EndElement) bool { _ = "STUB: not implemented"; return false }
 
 // Equal 两个 name 是否相等
-func (n Name) Equal(v Name) bool {
-	return n.Prefix.Value == v.Prefix.Value &&
-		n.Local.Value == v.Local.Value
-}
+func (n Name) Equal(v Name) bool { _ = "STUB: not implemented"; return false }
 
 // String fmt.Stringer
-func (n Name) String() string {
-	if n.Prefix.Value == "" {
-		return n.Local.Value
-	}
-	return n.Prefix.Value + ":" + n.Local.Value
-}
+func (n Name) String() string { _ = "STUB: not implemented"; return "" }

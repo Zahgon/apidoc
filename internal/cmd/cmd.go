@@ -4,8 +4,6 @@
 package cmd
 
 import (
-	"flag"
-	"fmt"
 	"io"
 	"os"
 
@@ -51,55 +49,21 @@ type printer struct {
 
 type uri core.URI
 
-func (u uri) Get() any { return string(u) }
+func (u uri) Get() any { _ = "STUB: not implemented"; return *new(any) }
 
-func (u *uri) Set(v string) error {
-	*u = uri(core.FileURI(v))
-	return nil
+func (u *uri) Set(v string) error { _ = "STUB: not implemented"; return nil }
+
+func (u *uri) String() string { _ = "STUB: not implemented"; return "" }
+
+func (u uri) URI() core.URI {
+	_ = "STUB: not implemented"
+
+	// Init 初始化 cmdopt.CmdOpt 实例
+	return *new(core.URI)
 }
 
-func (u *uri) String() string { return core.URI(*u).String() }
+func Init(out io.Writer) *cmdopt.CmdOpt { _ = "STUB: not implemented"; return nil }
 
-func (u uri) URI() core.URI { return core.URI(u) }
+func messageHandle(msg *core.Message) { _ = "STUB: not implemented"; return }
 
-// Init 初始化 cmdopt.CmdOpt 实例
-func Init(out io.Writer) *cmdopt.CmdOpt {
-	command := &cmdopt.CmdOpt{
-		Output:        out,
-		ErrorHandling: flag.ExitOnError,
-		Header:        locale.Sprintf(locale.CmdUsage, core.Name),
-		Footer:        locale.Sprintf(locale.CmdUsageFooter, core.OfficialURL, core.RepoURL),
-		OptionsTitle:  locale.Sprintf(locale.CmdUsageOptions),
-		CommandsTitle: locale.Sprintf(locale.CmdUsageCommands),
-		NotFound: func(name string) string {
-			return locale.Sprintf(locale.CmdNotFound, name)
-		},
-	}
-
-	command.Help("help", locale.Sprintf(locale.CmdHelpUsage))
-	initBuild(command)
-	initDetect(command)
-	initLang(command)
-	initLocale(command)
-	initSyntax(command)
-	initVersion(command)
-	initMock(command)
-	initStatic(command)
-	initLSP(command)
-
-	return command
-}
-
-func messageHandle(msg *core.Message) {
-	printers[msg.Type].print(msg.Message)
-}
-
-func (p *printer) print(msg any) {
-	if _, err := colors.Fprint(p.out, colors.Normal, p.color, colors.Default, locale.New(p.prefix)); err != nil {
-		panic(err)
-	}
-
-	if _, err := fmt.Fprintln(p.out, msg); err != nil {
-		panic(err)
-	}
-}
+func (p *printer) print(msg any) { _ = "STUB: not implemented"; return }

@@ -4,7 +4,6 @@ package openapi
 
 import (
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // Style.Style 的可选值
@@ -27,12 +26,4 @@ type Style struct {
 	AllowReserved bool   `json:"allowReserved,omitempty" yaml:"allowReserved,omitempty"`
 }
 
-func (style *Style) sanitize() *core.Error {
-	switch style.Style {
-	case StyleMatrix, StyleLabel, StyleForm, StyleSimple, StyleSpaceDelimited, StylePipeDelimited, StyleDeepObject:
-	default:
-		return core.NewError(locale.ErrInvalidValue).WithField("style")
-	}
-
-	return nil
-}
+func (style *Style) sanitize() *core.Error { _ = "STUB: not implemented"; return nil }

@@ -5,13 +5,11 @@ package lsp
 import (
 	"context"
 	"log"
-	"strings"
 	"sync"
 
 	"github.com/issue9/jsonrpc"
 	"golang.org/x/text/message"
 
-	"github.com/caixw/apidoc/v7/internal/locale"
 	"github.com/caixw/apidoc/v7/internal/lsp/protocol"
 )
 
@@ -41,106 +39,51 @@ type server struct {
 }
 
 func newServe(t jsonrpc.Transport, infolog, errlog *log.Logger) *server {
-	jsonrpcServer := jsonrpc.NewServer()
-
-	srv := &server{
-		Conn:  jsonrpcServer.NewConn(t, errlog),
-		state: serverCreated,
-		trace: protocol.TraceValueOff,
-		info:  infolog,
-		erro:  errlog,
-	}
-
-	jsonrpcServer.Registers(map[string]any{
-		"initialize":      srv.initialize,
-		"initialized":     srv.initialized,
-		"shutdown":        srv.shutdown,
-		"exit":            srv.exit,
-		"$/cancelRequest": srv.cancel,
-		"$/setTrace":      srv.setTrace,
-
-		// workspace
-		"workspace/didChangeWorkspaceFolders": srv.workspaceDidChangeWorkspaceFolders,
-
-		// textDocument
-		"textDocument/didChange":      srv.textDocumentDidChange,
-		"textDocument/hover":          srv.textDocumentHover,
-		"textDocument/foldingRange":   srv.textDocumentFoldingRange,
-		"textDocument/completion":     srv.textDocumentCompletion,
-		"textDocument/semanticTokens": srv.textDocumentSemanticTokens,
-		"textDocument/references":     srv.textDocumentReferences,
-		"textDocument/definition":     srv.textDocumentDefinition,
-
-		// apidoc 自定义的接口
-		"apidoc/refreshOutline": srv.apidocRefreshOutline,
-		"apidoc/detect":         srv.apidocDetect,
-	})
-
-	jsonrpcServer.RegisterMatcher(func(method string) bool {
-		return strings.HasPrefix(method, "$/")
-	}, srv.dollarHandler)
-
-	return srv
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (s *server) serve() error {
-	ctx, cancel := context.WithCancel(context.Background())
-	s.cancelFunc = cancel
-	return s.Serve(ctx)
-}
+// workspace
 
-func (s *server) setState(state serverState) {
-	s.stateMux.Lock()
-	defer s.stateMux.Unlock()
-	s.state = state
-}
+// textDocument
 
-func (s *server) getState() serverState {
-	s.stateMux.RLock()
-	defer s.stateMux.RUnlock()
-	return s.state
-}
+// apidoc 自定义的接口
+
+func (s *server) serve() error { _ = "STUB: not implemented"; return nil }
+
+func (s *server) setState(state serverState) { _ = "STUB: not implemented"; return }
+
+func (s *server) getState() serverState { _ = "STUB: not implemented"; return *new(serverState) }
 
 // $/setTrace
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#setTrace
 func (s *server) setTrace(notify bool, in *protocol.SetTraceParams, out *any) error {
-	if protocol.IsValidTraceValue(in.Value) {
-		s.trace = in.Value
-		return nil
-	}
-
-	s.trace = protocol.TraceValueOff
-	return newError(ErrInvalidParams, locale.ErrInvalidValue)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // $/logTrace
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#logTrace
-func (s *server) logTrace(message, verbose string) {
-	if p := protocol.BuildLogTrace(s.trace, message, verbose); p != nil {
-		if err := s.Notify("$/logTrace", p); err != nil {
-			s.erro.Println(err)
-		}
-	}
-}
+func (s *server) logTrace(message, verbose string) { _ = "STUB: not implemented"; return }
 
 // $/cancelRequest
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#cancelRequest
 func (s *server) cancel(notify bool, in *protocol.CancelParams, out *any) error {
+	_ = "STUB: not implemented"
+
+	// 所有以 $/ 开头且未处理的服务由此函数处理
+	//
+	// $ Notifications and Requests
+	//
+	// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#dollarRequests
 	return nil
 }
 
-// 所有以 $/ 开头且未处理的服务由此函数处理
-//
-// $ Notifications and Requests
-//
-// https://microsoft.github.io/language-server-protocol/specifications/specification-current/#dollarRequests
 func (s *server) dollarHandler(notify bool, in, out *any) error {
-	if !notify {
-		return newError(ErrMethodNotFound, locale.UnimplementedRPC, "$/***")
-	}
+	_ = "STUB: not implemented"
 	return nil
 }
 
@@ -148,32 +91,28 @@ func (s *server) dollarHandler(notify bool, in, out *any) error {
 //
 // https://microsoft.github.io/language-server-protocol/specifications/specification-current/#window_logMessage
 func (s *server) windowLogMessage(t protocol.MessageType, message string) {
-	err := s.Notify("window/logMessage", &protocol.LogMessageParams{
-		Type:    t,
-		Message: message,
-	})
-	if err != nil {
-		s.erro.Println(err)
-	}
+	_ = "STUB: not implemented"
+	return
 }
 
-func (s *server) printErr(err error) {
-	s.erro.Println(err)
-	s.logTrace(err.Error(), "")
-}
+func (s *server) printErr(err error) { _ = "STUB: not implemented"; return }
 
 func (s *server) windowLogInfoMessage(key message.Reference, v ...any) {
-	s.windowLogMessage(protocol.MessageTypeInfo, locale.Sprintf(key, v...))
+	_ = "STUB: not implemented"
+	return
 }
 
 func (s *server) windowLogLogMessage(key message.Reference, v ...any) {
-	s.windowLogMessage(protocol.MessageTypeLog, locale.Sprintf(key, v...))
+	_ = "STUB: not implemented"
+	return
 }
 
 func (s *server) windowLogWarnMessage(key message.Reference, v ...any) {
-	s.windowLogMessage(protocol.MessageTypeWarning, locale.Sprintf(key, v...))
+	_ = "STUB: not implemented"
+	return
 }
 
 func (s *server) windowLogErrorMessage(key message.Reference, v ...any) {
-	s.windowLogMessage(protocol.MessageTypeError, locale.Sprintf(key, v...))
+	_ = "STUB: not implemented"
+	return
 }

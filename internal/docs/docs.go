@@ -4,22 +4,14 @@
 package docs
 
 import (
-	"bytes"
-	"errors"
-	"io"
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
-	"path"
-	"strings"
 
 	"github.com/issue9/source"
 
 	"github.com/caixw/apidoc/v7/core"
-	"github.com/caixw/apidoc/v7/docs"
 	"github.com/caixw/apidoc/v7/internal/ast"
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // FileHeader 表示输出文件的文件头内容
@@ -40,151 +32,40 @@ var docsDir = core.FileURI(source.CurrentPath("../../docs"))
 
 // Dir 指向 /docs 的路径
 func Dir() core.URI {
-	return docsDir
+	_ = "STUB: not implemented"
+
+	// StylesheetURL 生成 apidoc.xsl 文件的 URL 地址
+	//
+	// 相对于 docs 目录
+	return *new(core.URI)
 }
 
-// StylesheetURL 生成 apidoc.xsl 文件的 URL 地址
-//
-// 相对于 docs 目录
-func StylesheetURL(prefix string) string {
-	if prefix == "" {
-		return ast.MajorVersion + "/apidoc.xsl"
-	}
-	if prefix[len(prefix)-1] != '/' {
-		prefix += "/"
-	}
-	return prefix + ast.MajorVersion + "/apidoc.xsl"
-}
+func StylesheetURL(prefix string) string { _ = "STUB: not implemented"; return "" }
 
 // Handler 返回文件服务中间件
 //
 // 如果 folder 为空，表示采用内嵌的数据作为文件服务；
 // stylesheet 是否只返回最基本的样式表相关文件。
 func Handler(folder core.URI, stylesheet bool, erro *log.Logger) http.Handler {
-	if folder == "" {
-		return fsHandler(docs.FS, stylesheet, erro)
-	}
-
-	switch scheme, path := folder.Parse(); scheme {
-	case core.SchemeFile, "":
-		return fsHandler(os.DirFS(path), stylesheet, erro)
-	case core.SchemeHTTP, core.SchemeHTTPS:
-		return remoteHandler(folder, stylesheet, erro)
-	default:
-		panic(locale.NewError(locale.ErrInvalidURIScheme, scheme))
-	}
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 func fsHandler(fsys fs.FS, stylesheet bool, erro *log.Logger) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		pp := r.URL.Path
-		if pp == "" || pp == "/" {
-			pp = indexPage
-		}
-		if pp[0] == '/' {
-			pp = pp[1:]
-		}
-		if pp[len(pp)-1] == '/' {
-			pp = path.Join(pp, indexPage)
-		}
-
-	READ:
-		if stylesheet && !isStylesheetFile(pp) {
-			errStatus(w, http.StatusNotFound)
-			return
-		}
-
-		f, err := fsys.Open(pp)
-		if errors.Is(err, fs.ErrNotExist) {
-			errStatus(w, http.StatusNotFound)
-			return
-		} else if errors.Is(err, fs.ErrPermission) {
-			errStatus(w, http.StatusForbidden)
-			return
-		} else if err != nil {
-			errStatusWithError(w, err, erro)
-			return
-		}
-		defer f.Close()
-
-		stat, err := f.Stat()
-		if err != nil {
-			errStatusWithError(w, err, erro)
-			return
-		}
-		if stat.IsDir() {
-			pp = path.Join(pp, indexPage)
-			goto READ
-		}
-
-		data, err := io.ReadAll(f)
-		if err != nil {
-			errStatusWithError(w, err, erro)
-			return
-		}
-
-		http.ServeContent(w, r, r.URL.Path, stat.ModTime(), bytes.NewReader(data))
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
 func remoteHandler(url core.URI, stylesheet bool, erro *log.Logger) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		p := r.URL.Path
-
-		if stylesheet && !isStylesheetFile(p) {
-			errStatus(w, http.StatusNotFound)
-			return
-		}
-
-		uri := url.Append(p)
-		data, err := uri.ReadAll(nil)
-		if err != nil {
-			httpError, ok := err.(*core.HTTPError)
-			if !ok {
-				errStatus(w, http.StatusInternalServerError)
-				return
-			}
-
-			if httpError.Code != http.StatusNotFound {
-				errStatusWithError(w, httpError, erro)
-				return
-			}
-
-			data, err = uri.Append(indexPage).ReadAll(nil)
-			if err != nil {
-				errStatusWithError(w, err, erro)
-				return
-			}
-		}
-
-		w.Write(data)
-	})
+	_ = "STUB: not implemented"
+	return *new(http.Handler)
 }
 
-func errStatus(w http.ResponseWriter, status int) {
-	http.Error(w, http.StatusText(status), status)
-}
+func errStatus(w http.ResponseWriter, status int) { _ = "STUB: not implemented"; return }
 
 func errStatusWithError(w http.ResponseWriter, err error, l *log.Logger) {
-	if herr, ok := err.(*core.HTTPError); ok {
-		http.Error(w, herr.Error(), herr.Code)
-		return
-	}
-
-	l.Println(err)
-	errStatus(w, http.StatusInternalServerError)
+	_ = "STUB: not implemented"
+	return
 }
 
-func isStylesheetFile(filename string) bool {
-	if len(filename) > 0 && filename[0] == '/' {
-		filename = filename[1:]
-	}
-
-	for _, file := range styles {
-		if file == filename || strings.HasPrefix(filename, file) {
-			return true
-		}
-	}
-
-	return false
-}
+func isStylesheetFile(filename string) bool { _ = "STUB: not implemented"; return false }

@@ -4,8 +4,6 @@ package core
 
 import (
 	"golang.org/x/text/message"
-
-	"github.com/caixw/apidoc/v7/internal/locale"
 )
 
 // MessageType 表示消息的类型
@@ -19,20 +17,7 @@ const (
 	Succ
 )
 
-func (t MessageType) String() string {
-	switch t {
-	case Erro:
-		return "ERRO"
-	case Warn:
-		return "WARN"
-	case Info:
-		return "INFO"
-	case Succ:
-		return "SUCC"
-	default:
-		return "<unknown>"
-	}
-}
+func (t MessageType) String() string { _ = "STUB: not implemented"; return "" }
 
 // Message 输出消息的具体结构
 type Message struct {
@@ -52,54 +37,36 @@ type MessageHandler struct {
 }
 
 // NewMessageHandler 声明新的 MessageHandler 实例
-func NewMessageHandler(f HandlerFunc) *MessageHandler {
-	h := &MessageHandler{
-		messages: make(chan *Message, 100),
-		stop:     make(chan struct{}),
-	}
-
-	go func() {
-		for msg := range h.messages {
-			f(msg)
-		}
-		h.stop <- struct{}{}
-	}()
-
-	return h
-}
+func NewMessageHandler(f HandlerFunc) *MessageHandler { _ = "STUB: not implemented"; return nil }
 
 // Stop 停止处理错误内容
 //
 // 只有在消息处理完成之后，才会返回。
 func (h *MessageHandler) Stop() {
-	close(h.messages)
+	_ = "STUB: not implemented"
 
 	// Stop() 调用可能是在主程序结束处。
 	// 通过 h.stop 阻塞函数返回，直到所有消息都处理完成。
-	<-h.stop
+	return
 }
 
 // Message 发送消息
-func (h *MessageHandler) Message(t MessageType, msg any) {
-	h.messages <- &Message{
-		Type:    t,
-		Message: msg,
-	}
-}
+func (h *MessageHandler) Message(t MessageType, msg any) { _ = "STUB: not implemented"; return }
 
 // Locale 发送普通的文本信息
 func (h *MessageHandler) Locale(t MessageType, key message.Reference, val ...any) {
-	h.Message(t, locale.New(key, val...))
+	_ = "STUB: not implemented"
+	return
 }
 
 // Error 发送错误类型的值
-func (h *MessageHandler) Error(err any) { h.Message(Erro, err) }
+func (h *MessageHandler) Error(err any) { _ = "STUB: not implemented"; return }
 
 // Warning 发送错误类型的值
-func (h *MessageHandler) Warning(err any) { h.Message(Warn, err) }
+func (h *MessageHandler) Warning(err any) { _ = "STUB: not implemented"; return }
 
 // Success 发送错误类型的值
-func (h *MessageHandler) Success(err any) { h.Message(Succ, err) }
+func (h *MessageHandler) Success(err any) { _ = "STUB: not implemented"; return }
 
 // Info 发送错误类型的值
-func (h *MessageHandler) Info(err any) { h.Message(Info, err) }
+func (h *MessageHandler) Info(err any) { _ = "STUB: not implemented"; return }
